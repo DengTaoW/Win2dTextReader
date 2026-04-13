@@ -1,0 +1,10 @@
+import "Chapter.idl"; 
+
+namespace Xuanwen.Novel
+{
+	[default_interface]
+	runtimeclass ChaptersCollection : Windows.Foundation.Collections.IVector<Chapter>
+	{
+		ChaptersCollection();
+	}
+}

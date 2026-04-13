@@ -1,0 +1,12 @@
+namespace Xuanwen.Novel
+{
+	[default_interface]
+	runtimeclass Chapter
+	{
+		Chapter();
+		Chapter(Int32 index, String title, String text);
+		Int32 Index {get; set;}; 
+		String Title {get; set;}; 
+		String Text{ get; set; };
+	}
+}

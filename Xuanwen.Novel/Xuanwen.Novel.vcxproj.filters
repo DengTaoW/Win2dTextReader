@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{926ab91d-31b4-48c3-b9a4-e681349f27f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinRt">
+      <UniqueIdentifier>{d10f8747-d4fd-458a-a38d-812cbd7ce739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{8980f943-b248-4db0-8744-ed448cfa1806}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>WinRt</Filter>
+    </ClCompile>
+    <ClCompile Include="$(GeneratedFilesDir)module.g.cpp">
+      <Filter>WinRt</Filter>
+    </ClCompile>
+    <ClCompile Include="Chapter.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ChaptersCollection.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="Class.idl" />
+    <Midl Include="Chapter.idl">
+      <Filter>Components</Filter>
+    </Midl>
+    <Midl Include="ChaptersCollection.idl">
+      <Filter>Components</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Xuanwen.Novel.def" />
+    <None Include="packages.config">
+      <Filter>WinRt</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
+      <Filter>WinRt</Filter>
+    </Natvis>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
+      <Filter>WinRt</Filter>
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>WinRt</Filter>
+    </ClInclude>
+    <ClInclude Include="Chapter.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ChaptersCollection.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

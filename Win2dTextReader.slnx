@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Win2dTextReader/Win2dTextReader.vcxproj" Id="f68a2a7c-b47a-48e4-9766-4fbe02e473f8">
+    <Deploy />
+  </Project>
+  <Project Path="Xuanwen.Novel/Xuanwen.Novel.vcxproj" Id="7adf37fc-a7b1-40a8-8662-619de513fc31" />
+</Solution>
