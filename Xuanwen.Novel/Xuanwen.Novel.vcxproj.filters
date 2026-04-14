@@ -4,19 +4,19 @@
     <Filter Include="Generated Files">
       <UniqueIdentifier>{926ab91d-31b4-48c3-b9a4-e681349f27f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WinRt">
-      <UniqueIdentifier>{d10f8747-d4fd-458a-a38d-812cbd7ce739}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components">
       <UniqueIdentifier>{8980f943-b248-4db0-8744-ed448cfa1806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Packages">
+      <UniqueIdentifier>{d10f8747-d4fd-458a-a38d-812cbd7ce739}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>WinRt</Filter>
+      <Filter>Packages</Filter>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp">
-      <Filter>WinRt</Filter>
+      <Filter>Packages</Filter>
     </ClCompile>
     <ClCompile Include="Chapter.cpp">
       <Filter>Components</Filter>
@@ -42,20 +42,12 @@
   <ItemGroup>
     <None Include="Xuanwen.Novel.def" />
     <None Include="packages.config">
-      <Filter>WinRt</Filter>
+      <Filter>Packages</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
-      <Filter>WinRt</Filter>
-    </Natvis>
-    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
-      <Filter>WinRt</Filter>
-    </Natvis>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="pch.h">
-      <Filter>WinRt</Filter>
+      <Filter>Packages</Filter>
     </ClInclude>
     <ClInclude Include="Chapter.h">
       <Filter>Components</Filter>
@@ -66,5 +58,13 @@
     <ClInclude Include="NovelBook.h">
       <Filter>Components</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
+      <Filter>Packages</Filter>
+    </Natvis>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
+      <Filter>Packages</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>
