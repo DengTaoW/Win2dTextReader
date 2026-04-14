@@ -11,10 +11,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>WinRT</Filter>
+      <Filter>Packages</Filter>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp">
-      <Filter>WinRT</Filter>
+      <Filter>Packages</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -176,37 +176,42 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{f68a2a7c-b47a-48e4-9766-4fbe02e473f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WinRT">
+    <Filter Include="Packages">
       <UniqueIdentifier>{06af03e2-efea-465b-8180-7d38c930f37e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
-      <Filter>WinRT</Filter>
+      <Filter>Packages</Filter>
     </Natvis>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter">
-      <Filter>WinRT</Filter>
+      <Filter>Packages</Filter>
     </Natvis>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="app.manifest">
-      <Filter>WinRT</Filter>
+      <Filter>Packages</Filter>
     </Manifest>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
-      <Filter>WinRT</Filter>
+      <Filter>Packages</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
-      <Filter>WinRT</Filter>
+      <Filter>Packages</Filter>
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
-      <Filter>WinRT</Filter>
+      <Filter>Packages</Filter>
     </None>
-    <None Include="Win2dTextReader_TemporaryKey.pfx" />
+    <None Include="Package.StoreAssociation.xml">
+      <Filter>Packages</Filter>
+    </None>
+    <None Include="Win2dTextReader_TemporaryKey.pfx">
+      <Filter>Packages</Filter>
+    </None>
   </ItemGroup>
 </Project>
