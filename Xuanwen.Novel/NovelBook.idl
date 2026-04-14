@@ -1,0 +1,15 @@
+import "ChaptersCollection.idl"; 
+
+
+namespace Xuanwen.Novel
+{
+	[default_interface]
+	runtimeclass NovelBook
+	{
+		NovelBook(String filePath);
+		
+		Windows.Foundation.IAsyncAction InitializeAsync(); 
+		String Name{ get; };
+		ChaptersCollection Chapters{ get; };
+	}
+}

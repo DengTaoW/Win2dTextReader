@@ -24,13 +24,18 @@
     <ClCompile Include="ChaptersCollection.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="NovelBook.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="Class.idl" />
     <Midl Include="Chapter.idl">
       <Filter>Components</Filter>
     </Midl>
     <Midl Include="ChaptersCollection.idl">
+      <Filter>Components</Filter>
+    </Midl>
+    <Midl Include="NovelBook.idl">
       <Filter>Components</Filter>
     </Midl>
   </ItemGroup>
@@ -56,6 +61,9 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="ChaptersCollection.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="NovelBook.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>

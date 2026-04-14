@@ -126,11 +126,13 @@
   <ItemGroup>
     <ClInclude Include="Chapter.h" />
     <ClInclude Include="ChaptersCollection.h" />
+    <ClInclude Include="NovelBook.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chapter.cpp" />
     <ClCompile Include="ChaptersCollection.cpp" />
+    <ClCompile Include="NovelBook.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -143,6 +145,7 @@
   <ItemGroup>
     <Midl Include="Chapter.idl" />
     <Midl Include="ChaptersCollection.idl" />
+    <Midl Include="NovelBook.idl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
