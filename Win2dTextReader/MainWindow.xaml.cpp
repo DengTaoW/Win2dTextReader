@@ -41,37 +41,57 @@ namespace winrt::Win2dTextReader::implementation
 
 		m_chapterIndex = 0; 
 		winrt::Xuanwen::Novel::Chapter firstChapter = m_novelBook.Chapters().GetAt(m_chapterIndex); 
+		this->ChapterTitleTextBlock().Text(firstChapter.Title());
 		this->FileContentTextBlock().Text(firstChapter.Text()); 
 	}
 
 
-	void MainWindow::OnPreviousChapterButtonClicked(
+	winrt::fire_and_forget MainWindow::OnPreviousChapterButtonClicked(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		if (m_novelBook == nullptr)
-			return; 
+			co_return;
 
 		if (m_chapterIndex == 0)
-			return; 
+			co_return; 
+
+		winrt::apartment_context context;
 
 		m_chapterIndex--; 
-		winrt::Xuanwen::Novel::Chapter firstChapter = m_novelBook.Chapters().GetAt(m_chapterIndex);
-		this->FileContentTextBlock().Text(firstChapter.Text());
+		winrt::Xuanwen::Novel::Chapter chapter = m_novelBook.Chapters().GetAt(m_chapterIndex);
+		this->ChapterTitleTextBlock().Text(chapter.Title());
+		this->FileContentTextBlock().Text(chapter.Text());
+
+		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
+		co_await context;
+
+		auto height = this->ContentScrollViewer().ScrollableHeight();
+		this->ContentScrollViewer().ScrollToVerticalOffset(-height);
 	}
 
-	void MainWindow::OnNextChapterButtonClicked(
+	winrt::fire_and_forget MainWindow::OnNextChapterButtonClicked(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		if (m_novelBook == nullptr)
-			return;
+			co_return;
 
 		auto newChapterIndex = m_chapterIndex + 1; 
 		if (newChapterIndex >= m_novelBook.Chapters().Size())
-			return;
+			co_return;
+
+		winrt::apartment_context context;
 
 		m_chapterIndex = newChapterIndex;
-		winrt::Xuanwen::Novel::Chapter firstChapter = m_novelBook.Chapters().GetAt(m_chapterIndex);
-		this->FileContentTextBlock().Text(firstChapter.Text());
+		winrt::Xuanwen::Novel::Chapter chapter = m_novelBook.Chapters().GetAt(m_chapterIndex);
+		this->ChapterTitleTextBlock().Text(chapter.Title());
+		this->FileContentTextBlock().Text(chapter.Text());
+
+		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
+		co_await context;
+		
+
+		auto height = this->ContentScrollViewer().ScrollableHeight();
+		this->ContentScrollViewer().ScrollToVerticalOffset(-height);
 	}
 }
 

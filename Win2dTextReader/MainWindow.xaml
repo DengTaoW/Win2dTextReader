@@ -25,7 +25,8 @@
         
         <TextBlock Grid.Row="1">
                 <Run x:Name="BookNameTextBlock" /> 
-                <Run x:Name="NovelInfoTextBlock" />
+                <Run x:Name="NovelInfoTextBlock" /> ----
+                <Run x:Name="ChapterTitleTextBlock" />
         </TextBlock>
         
         <ScrollViewer Grid.Row="2" x:Name="ContentScrollViewer" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">

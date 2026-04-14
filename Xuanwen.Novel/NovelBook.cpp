@@ -63,7 +63,16 @@ namespace winrt::Xuanwen::Novel::implementation
                 currentChapter = winrt::Xuanwen::Novel::Chapter(); 
                 m_chapters.Append(currentChapter); 
                 currentChapter.Index(counter); 
-                currentChapter.Title(winrt::hstring(line)); 
+
+                if (line.back() == L'\r')
+                {
+                    std::wstring titleStr{ line };
+                    titleStr.pop_back(); 
+                    currentChapter.Title(titleStr);
+                }
+                else {
+                    currentChapter.Title(winrt::hstring(line));
+                }
 
                 currentPos = lineStart; 
             }
@@ -161,8 +170,10 @@ namespace winrt::Xuanwen::Novel::implementation
 
     bool NovelBook::IsTitle(std::wstring_view line)
     {
-
-        if (line.length() <= 12) {
+        if (line.length() <= 2) {
+            return false; 
+        }
+        else if (line.length() <= 12) {
             return std::regex_search(line.begin(), line.end(), TITLE_REGEX); 
         }
         else {
