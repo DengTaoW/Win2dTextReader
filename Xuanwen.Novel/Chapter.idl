@@ -4,8 +4,8 @@ namespace Xuanwen.Novel
 	runtimeclass Chapter
 	{
 		Chapter();
-		Chapter(Int32 index, String title, String text);
-		Int32 Index {get; set;}; 
+		Chapter(UInt32 index, String title, String text);
+		UInt32 Index {get; set;}; 
 		String Title {get; set;}; 
 		String Text{ get; set; };
 	}

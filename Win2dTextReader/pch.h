@@ -1,4 +1,7 @@
 #pragma once
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+
 #include <windows.h>
 #include <unknwn.h>
 #include <restrictederrorinfo.h>
@@ -23,3 +26,11 @@
 #include <winrt/Microsoft.UI.Xaml.Shapes.h>
 #include <winrt/Microsoft.UI.Dispatching.h>
 #include <wil/cppwinrt_helpers.h>
+
+#include <winrt/Microsoft.UI.Windowing.h>
+#include <winrt/Windows.Storage.h>
+#include <winrt/Microsoft.Windows.Storage.h>
+#include <winrt/Microsoft.Windows.Storage.Pickers.h>
+#include <strsafe.h>
+
+#include <winrt/Xuanwen.Novel.h>

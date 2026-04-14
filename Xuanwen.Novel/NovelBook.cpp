@@ -57,13 +57,13 @@ namespace winrt::Xuanwen::Novel::implementation
             std::wstring_view line = contentView.substr(lineStart, lineEnd - lineStart); 
             if (IsTitle(line)) {
                 std::wstring_view text = contentView.substr(currentPos, lineStart - currentPos); 
-                currentChapter.Text(text); 
+                currentChapter.Text(winrt::hstring(text)); 
 
                 ++counter; 
                 currentChapter = winrt::Xuanwen::Novel::Chapter(); 
                 m_chapters.Append(currentChapter); 
                 currentChapter.Index(counter); 
-                currentChapter.Title(line); 
+                currentChapter.Title(winrt::hstring(line)); 
 
                 currentPos = lineStart; 
             }
@@ -71,7 +71,7 @@ namespace winrt::Xuanwen::Novel::implementation
         }
 
         std::wstring_view text = contentView.substr(currentPos); 
-        currentChapter.Text(text); 
+        currentChapter.Text(winrt::hstring(text)); 
     }
 
     hstring NovelBook::Name()

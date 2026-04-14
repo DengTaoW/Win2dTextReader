@@ -4,22 +4,25 @@
 
 namespace winrt::Win2dTextReader::implementation
 {
-    struct MainWindow : MainWindowT<MainWindow>
-    {
-        MainWindow()
-        {
-            // Xaml objects should not call InitializeComponent during construction.
-            // See https://github.com/microsoft/cppwinrt/tree/master/nuget#initializecomponent
-        }
+	struct MainWindow : MainWindowT<MainWindow>
+	{
+	private:
+		winrt::Xuanwen::Novel::NovelBook m_novelBook{ nullptr };
+		uint32_t m_chapterIndex; 
 
-        int32_t MyProperty();
-        void MyProperty(int32_t value);
-    };
+	public:
+		MainWindow();
+		void InitializeComponent();
+
+		winrt::fire_and_forget OnOpenButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+		void OnPreviousChapterButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+		void OnNextChapterButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+	};
 }
 
 namespace winrt::Win2dTextReader::factory_implementation
 {
-    struct MainWindow : MainWindowT<MainWindow, implementation::MainWindow>
-    {
-    };
+	struct MainWindow : MainWindowT<MainWindow, implementation::MainWindow>
+	{
+	};
 }
