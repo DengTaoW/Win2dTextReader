@@ -8,13 +8,34 @@
 namespace winrt::Win2dTextReader::implementation
 {
 	MainWindow::MainWindow()
-		: m_chapterIndex{ 0 }
+		: m_chapterIndex{ UINT32_MAX }
 	{
 	}
 
 	void MainWindow::InitializeComponent()
 	{
 		MainWindowT::InitializeComponent(); 
+		m_bookContents = winrt::Win2dTextReader::BookContents(); 
+		m_bookContents.SelectedChapterChanged({this, &MainWindow::SetCurrentChapter});
+	}
+
+	winrt::fire_and_forget MainWindow::SetCurrentChapter(winrt::Xuanwen::Novel::Chapter const& chapter)
+	{
+		if (m_chapterIndex == chapter.Index())
+			co_return; 
+
+		winrt::apartment_context context; 
+
+		m_chapterIndex = chapter.Index(); 
+		this->ChapterTitleTextBlock().Text(chapter.Title());
+		this->ChapterContentTextBlock().Text(chapter.Text());
+		this->ContentsPopup().IsOpen(false); 
+
+		co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
+		co_await context; 
+
+		auto height = this->ContentScrollViewer().ScrollableHeight();
+		this->ContentScrollViewer().ScrollToVerticalOffset(-height);
 	}
 
 	winrt::fire_and_forget MainWindow::OnOpenButtonClicked(
@@ -30,6 +51,10 @@ namespace winrt::Win2dTextReader::implementation
 		if (result == nullptr)
 			co_return; 
 
+		if (m_novelBook != nullptr) {
+			m_novelBook.Chapters().Clear(); 
+		}
+
 		m_novelBook = winrt::Xuanwen::Novel::NovelBook(result.Path()); 
 		co_await m_novelBook.InitializeAsync();
 
@@ -39,61 +64,75 @@ namespace winrt::Win2dTextReader::implementation
 		StringCchPrintfW(novelInfo, _countof(novelInfo), L" \t共 %d 章", m_novelBook.Chapters().Size()); 
 		this->NovelInfoTextBlock().Text(novelInfo); 
 
-		m_chapterIndex = 0; 
-		winrt::Xuanwen::Novel::Chapter firstChapter = m_novelBook.Chapters().GetAt(m_chapterIndex); 
-		this->ChapterTitleTextBlock().Text(firstChapter.Title());
-		this->FileContentTextBlock().Text(firstChapter.Text()); 
+		m_bookContents.SetChapters(m_novelBook.Chapters()); 
+
+		if (m_novelBook.Chapters().Size() > 0) {
+			this->SetCurrentChapter(m_novelBook.Chapters().GetAt(0));
+			m_bookContents.SetSelectedIndex(0);
+		}
 	}
 
 
-	winrt::fire_and_forget MainWindow::OnPreviousChapterButtonClicked(
+	void MainWindow::OnPreviousChapterButtonClicked(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		if (m_novelBook == nullptr)
-			co_return;
+			return;
 
 		if (m_chapterIndex == 0)
-			co_return; 
+			return; 
 
-		winrt::apartment_context context;
-
-		m_chapterIndex--; 
-		winrt::Xuanwen::Novel::Chapter chapter = m_novelBook.Chapters().GetAt(m_chapterIndex);
-		this->ChapterTitleTextBlock().Text(chapter.Title());
-		this->FileContentTextBlock().Text(chapter.Text());
-
-		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
-		co_await context;
-
-		auto height = this->ContentScrollViewer().ScrollableHeight();
-		this->ContentScrollViewer().ScrollToVerticalOffset(-height);
+		winrt::Xuanwen::Novel::Chapter chapter = m_novelBook.Chapters().GetAt(m_chapterIndex - 1);
+		this->SetCurrentChapter(chapter); 
 	}
 
-	winrt::fire_and_forget MainWindow::OnNextChapterButtonClicked(
+	void MainWindow::OnNextChapterButtonClicked(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		if (m_novelBook == nullptr)
-			co_return;
+			return;
 
 		auto newChapterIndex = m_chapterIndex + 1; 
 		if (newChapterIndex >= m_novelBook.Chapters().Size())
-			co_return;
+			return;
 
-		winrt::apartment_context context;
-
-		m_chapterIndex = newChapterIndex;
-		winrt::Xuanwen::Novel::Chapter chapter = m_novelBook.Chapters().GetAt(m_chapterIndex);
-		this->ChapterTitleTextBlock().Text(chapter.Title());
-		this->FileContentTextBlock().Text(chapter.Text());
-
-		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
-		co_await context;
-		
-
-		auto height = this->ContentScrollViewer().ScrollableHeight();
-		this->ContentScrollViewer().ScrollToVerticalOffset(-height);
+		winrt::Xuanwen::Novel::Chapter chapter = m_novelBook.Chapters().GetAt(newChapterIndex);
+		this->SetCurrentChapter(chapter); 
 	}
+
+
+	winrt::fire_and_forget MainWindow::ShowContents(
+		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+	{
+		if (m_novelBook == nullptr || m_novelBook.Chapters().Size() == 0)
+			co_return; 
+
+		winrt::apartment_context context; 
+
+		this->ContentsPopup().Child(m_bookContents); 
+		
+		winrt::Windows::Foundation::Numerics::float2 containerSize = this->ContentScrollViewer().ActualSize();
+		
+		float width = containerSize.x * 0.6f; 
+		float height = containerSize.y * 0.8f; 
+
+		float left = (containerSize.x - width) / 2.0f; 
+		float top = (containerSize.y - height) / 2.0f; 
+
+		m_bookContents.Width(containerSize.x * 0.6); 
+		m_bookContents.Height(containerSize.y * 0.8); 
+		m_bookContents.SetSelectedIndex(m_chapterIndex); 
+
+		this->ContentsPopup().HorizontalOffset(left); 
+		this->ContentsPopup().VerticalOffset(top); 
+
+		co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
+		co_await context; 
+		this->ContentsPopup().IsOpen(true); 
+	}
+
 }
+
 
 
 

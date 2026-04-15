@@ -9,6 +9,10 @@
     mc:Ignorable="d"
     Title="Win2dTextReader">
 
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
     <Grid RowSpacing="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -21,6 +25,7 @@
             <Button Content="打开" Click="OnOpenButtonClicked" />
             <Button Content="上一章" Click="OnPreviousChapterButtonClicked" />
             <Button Content="下一章" Click="OnNextChapterButtonClicked" />
+            <Button Content="目录" Click="ShowContents" />
         </StackPanel>
         
         <TextBlock Grid.Row="1">
@@ -30,7 +35,10 @@
         </TextBlock>
         
         <ScrollViewer Grid.Row="2" x:Name="ContentScrollViewer" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
-            <TextBlock x:Name="FileContentTextBlock" TextWrapping="Wrap"/>
+            <TextBlock x:Name="ChapterContentTextBlock" TextWrapping="Wrap"/>
         </ScrollViewer>
+
+        <Popup Grid.Row="2" x:Name="ContentsPopup" IsLightDismissEnabled="True" />
+
     </Grid>
 </Window>

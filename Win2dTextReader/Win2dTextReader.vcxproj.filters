@@ -4,10 +4,10 @@
     <ApplicationDefinition Include="App.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MainWindow.xaml" />
-  </ItemGroup>
-  <ItemGroup>
     <Midl Include="MainWindow.idl" />
+    <Midl Include="Delegates.idl">
+      <Filter>Components</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -179,6 +179,12 @@
     <Filter Include="Packages">
       <UniqueIdentifier>{06af03e2-efea-465b-8180-7d38c930f37e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Views">
+      <UniqueIdentifier>{215c3026-3e72-47c9-8ebc-c79b7e03104e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{b18b53b7-07cc-491e-8802-7e20dfadfcf2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
@@ -213,5 +219,13 @@
     <None Include="Win2dTextReader_TemporaryKey.pfx">
       <Filter>Packages</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MainWindow.xaml">
+      <Filter>Views</Filter>
+    </Page>
+    <Page Include="BookContents.xaml">
+      <Filter>Views</Filter>
+    </Page>
   </ItemGroup>
 </Project>

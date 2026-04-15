@@ -8,15 +8,18 @@ namespace winrt::Win2dTextReader::implementation
 	{
 	private:
 		winrt::Xuanwen::Novel::NovelBook m_novelBook{ nullptr };
+		winrt::Win2dTextReader::BookContents m_bookContents{ nullptr }; 
 		uint32_t m_chapterIndex; 
 
 	public:
 		MainWindow();
 		void InitializeComponent();
 
+		winrt::fire_and_forget SetCurrentChapter(winrt::Xuanwen::Novel::Chapter const& chapter); 
 		winrt::fire_and_forget OnOpenButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
-		winrt::fire_and_forget OnPreviousChapterButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
-		winrt::fire_and_forget OnNextChapterButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+		void OnPreviousChapterButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+		void OnNextChapterButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+		winrt::fire_and_forget ShowContents(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
 	};
 }
 

@@ -1,0 +1,4 @@
+namespace Win2dTextReader
+{
+	delegate void ChapterAction(Xuanwen.Novel.Chapter chapter); 
+}

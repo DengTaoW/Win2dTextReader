@@ -8,7 +8,7 @@ namespace winrt::Xuanwen::Novel::implementation
 {
     ChaptersCollection::ChaptersCollection()
     {
-        m_chapters = winrt::single_threaded_vector<winrt::Xuanwen::Novel::Chapter>(); 
+        m_chapters = winrt::single_threaded_vector<winrt::Xuanwen::Novel::Chapter>();
     }
 
     winrt::Windows::Foundation::Collections::IIterator<winrt::Xuanwen::Novel::Chapter> ChaptersCollection::First()
