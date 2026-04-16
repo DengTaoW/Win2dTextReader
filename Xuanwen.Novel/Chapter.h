@@ -19,9 +19,9 @@ namespace winrt::Xuanwen::Novel::implementation
         void Text(hstring const& value);
 
     private:
-        uint32_t m_index; 
-        hstring m_title; 
-        hstring m_text; 
+        uint32_t m_index{};
+        hstring m_title;
+        hstring m_text;
     };
 }
 
