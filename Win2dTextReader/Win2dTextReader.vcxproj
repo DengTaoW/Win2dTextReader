@@ -136,6 +136,7 @@
     <ClInclude Include="MainWindow.xaml.h">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="ReadingHistory.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -166,6 +167,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="ReadingHistory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="BookContents.idl">
@@ -173,6 +175,7 @@
       <SubType>Code</SubType>
     </Midl>
     <Midl Include="Delegates.idl" />
+    <Midl Include="ReadingHistory.idl" />
     <Midl Include="MainWindow.idl">
       <SubType>Code</SubType>
       <DependentUpon>MainWindow.xaml</DependentUpon>

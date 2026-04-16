@@ -8,6 +8,9 @@
     <Midl Include="Delegates.idl">
       <Filter>Components</Filter>
     </Midl>
+    <Midl Include="ReadingHistory.idl">
+      <Filter>Components</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -15,6 +18,9 @@
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp">
       <Filter>Packages</Filter>
+    </ClCompile>
+    <ClCompile Include="ReadingHistory.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +208,9 @@
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Packages</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadingHistory.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

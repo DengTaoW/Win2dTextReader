@@ -1,0 +1,19 @@
+namespace Win2dTextReader
+{
+	[default_interface]
+	runtimeclass ReadingHistory
+	{
+		ReadingHistory();
+		
+		// Reading History
+		String FilePath; 
+		UInt32 ChapterIndex; 
+		Int32 WindowPositionX;
+		Int32 WindowPositionY; 
+		Int32 WindowSizeW; 
+		Int32 WindowSizeH;
+
+		void Save(); 
+		Boolean Load(); 
+	}
+}

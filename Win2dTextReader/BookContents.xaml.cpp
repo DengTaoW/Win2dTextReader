@@ -31,10 +31,11 @@ namespace winrt::Win2dTextReader::implementation
         if (index >= m_totalChapters)
             return; 
 
-        if (this->ContentsListView().SelectedIndex() == index)
+        int32_t chapterIndex = static_cast<int32_t>(index); 
+        if (this->ContentsListView().SelectedIndex() == chapterIndex)
             return; 
 
-        this->ContentsListView().SelectedIndex(static_cast<int32_t>(index)); 
+        this->ContentsListView().SelectedIndex(chapterIndex); 
     }
 
     winrt::event_token BookContents::SelectedChapterChanged(winrt::Win2dTextReader::ChapterAction const& handler)
