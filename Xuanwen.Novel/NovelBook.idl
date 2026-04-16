@@ -9,7 +9,10 @@ namespace Xuanwen.Novel
 		NovelBook(String filePath);
 		
 		Windows.Foundation.IAsyncAction InitializeAsync(); 
+
 		String Name{ get; };
+		String FilePath{ get; }; 
+		UInt32 TotalChars{ get; };
 		ChaptersCollection Chapters{ get; };
 	}
 }

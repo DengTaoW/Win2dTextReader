@@ -17,6 +17,28 @@ namespace winrt::Win2dTextReader::implementation
 		MainWindowT::InitializeComponent(); 
 		m_bookContents = winrt::Win2dTextReader::BookContents(); 
 		m_bookContents.SelectedChapterChanged({this, &MainWindow::SetCurrentChapter});
+
+		m_novelInfoControl = winrt::Win2dTextReader::NovelInfoControl(); 
+		this->SetWindowStyle(); 
+
+		// 设置 popup 控件
+		this->ContentsPopup().Child(m_bookContents);
+		this->NovelFileInfoPopup().Child(m_novelInfoControl); 
+	}
+
+	void MainWindow::SetWindowStyle()
+	{
+		this->ExtendsContentIntoTitleBar(true); 
+
+		winrt::Microsoft::UI::Windowing::OverlappedPresenter presenter =
+			winrt::Microsoft::UI::Windowing::OverlappedPresenter::Create();
+		
+		presenter.SetBorderAndTitleBar(true, true); 
+		presenter.IsMinimizable(false); 
+		presenter.IsMaximizable(false); 
+		presenter.IsResizable(true); 
+
+		this->AppWindow().SetPresenter(presenter);
 	}
 
 	winrt::fire_and_forget MainWindow::SetCurrentChapter(winrt::Xuanwen::Novel::Chapter const& chapter)
@@ -60,13 +82,8 @@ namespace winrt::Win2dTextReader::implementation
 
 		this->BookNameTextBlock().Text(m_novelBook.Name()); 
 		
-		wchar_t novelInfo[30]{ '\0' }; 
-		StringCchPrintfW(novelInfo, _countof(novelInfo), L" \t共 %d 章", m_novelBook.Chapters().Size()); 
-		this->NovelInfoTextBlock().Text(novelInfo); 
-
-		m_bookContents.SetChapters(m_novelBook.Chapters()); 
-
 		if (m_novelBook.Chapters().Size() > 0) {
+			m_chapterIndex = UINT32_MAX; 
 			this->SetCurrentChapter(m_novelBook.Chapters().GetAt(0));
 			m_bookContents.SetSelectedIndex(0);
 		}
@@ -108,19 +125,16 @@ namespace winrt::Win2dTextReader::implementation
 			co_return; 
 
 		winrt::apartment_context context; 
-
-		this->ContentsPopup().Child(m_bookContents); 
 		
-		winrt::Windows::Foundation::Numerics::float2 containerSize = this->ContentScrollViewer().ActualSize();
-		
-		float width = containerSize.x * 0.6f; 
-		float height = containerSize.y * 0.8f; 
-
+		winrt::Windows::Foundation::Numerics::float2 containerSize = this->ReaderRegion().ActualSize();
+		float width = containerSize.x * 0.5f; 
+		float height = containerSize.y * 0.9f; 
 		float left = (containerSize.x - width) / 2.0f; 
 		float top = (containerSize.y - height) / 2.0f; 
 
-		m_bookContents.Width(containerSize.x * 0.6); 
-		m_bookContents.Height(containerSize.y * 0.8); 
+		m_bookContents.Width(width); 
+		m_bookContents.Height(height); 
+		m_bookContents.SetChapters(m_novelBook.Chapters());
 		m_bookContents.SetSelectedIndex(m_chapterIndex); 
 
 		this->ContentsPopup().HorizontalOffset(left); 
@@ -129,6 +143,33 @@ namespace winrt::Win2dTextReader::implementation
 		co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
 		co_await context; 
 		this->ContentsPopup().IsOpen(true); 
+	}
+
+	winrt::fire_and_forget MainWindow::ShowNovelInfo(
+		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+	{
+		if (m_novelBook == nullptr)
+			co_return; 
+
+		winrt::apartment_context context; 
+
+		// 计算大小和位置
+		winrt::Windows::Foundation::Numerics::float2 containerSize = this->ReaderRegion().ActualSize();
+		float width = containerSize.x * 0.5f;
+		float height = containerSize.y * 0.4f;
+		float left = (containerSize.x - width) / 2.0f;
+		float top = (containerSize.y - height) / 2.0f;
+
+		m_novelInfoControl.Width(width);
+		m_novelInfoControl.Height(height);
+		m_novelInfoControl.SetNovelBook(m_novelBook);
+
+		this->NovelFileInfoPopup().HorizontalOffset(left);
+		this->NovelFileInfoPopup().VerticalOffset(top);
+
+		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
+		co_await context;
+		this->NovelFileInfoPopup().IsOpen(true);
 	}
 
 }

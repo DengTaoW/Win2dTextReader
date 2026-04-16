@@ -227,5 +227,8 @@
     <Page Include="BookContents.xaml">
       <Filter>Views</Filter>
     </Page>
+    <Page Include="NovelInfoControl.xaml">
+      <Filter>Views</Filter>
+    </Page>
   </ItemGroup>
 </Project>

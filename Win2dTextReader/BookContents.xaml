@@ -14,12 +14,27 @@
             BorderThickness="1"
             BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
             Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
-        <ListView x:Name="ContentsListView" SelectionMode="Single" SelectionChanged="ContentsListView_SelectionChanged" >
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="xw:Chapter">
-                    <TextBlock Text="{x:Bind Title}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+
+        <Grid RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" /> 
+            </Grid.RowDefinitions>
+
+            <TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" >
+                目录
+            </TextBlock>
+            
+            <ListView x:Name="ContentsListView" 
+                      Grid.Row="1"
+                      SelectionMode="Single" 
+                      SelectionChanged="ContentsListView_SelectionChanged" >
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="xw:Chapter">
+                        <TextBlock Text="{x:Bind Title}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </Border>
 </UserControl>

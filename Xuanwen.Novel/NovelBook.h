@@ -10,7 +10,9 @@ namespace winrt::Xuanwen::Novel::implementation
 
         NovelBook(hstring const& filePath);
         winrt::Windows::Foundation::IAsyncAction InitializeAsync();
-        hstring Name();
+        hstring Name() const;
+        hstring FilePath() const; 
+        uint32_t TotalChars() const; 
         winrt::Xuanwen::Novel::ChaptersCollection Chapters();
 
     private:
@@ -24,6 +26,7 @@ namespace winrt::Xuanwen::Novel::implementation
 
         hstring m_filePath; 
         hstring m_bookName; 
+        uint32_t m_totalChars; 
         winrt::Xuanwen::Novel::ChaptersCollection m_chapters{ nullptr }; 
     };
 }
