@@ -8,6 +8,17 @@
 
 const std::wregex TITLE_REGEX{ LR"(第[\s\d零一二三四五六七八九十百千万]+章)" };
 
+static constexpr size_t minOf(size_t v1, size_t v2)
+{
+    if (v1 < v2) {
+        return v1;
+    }
+    else {
+        return v2; 
+    }
+}
+
+
 namespace winrt::Xuanwen::Novel::implementation
 {
     NovelBook::NovelBook(hstring const& filePath)
@@ -119,53 +130,16 @@ namespace winrt::Xuanwen::Novel::implementation
         }
 
         // 2. 检测编码名称
-        size_t sampleSize = (dataLength > 8192ul) ? 8192ul : dataLength; 
+        const size_t sampleSize = minOf(10240ul, dataLength); 
         std::string charsetName = DetectCharsetName(data, sampleSize); 
 
-        // 3. 处理 UTF-16LE 字节数组
-        if (charsetName == "utf-16le") {
-            size_t wcharsCount = dataLength / 2; 
-            return std::wstring(reinterpret_cast<const wchar_t*>(data), wcharsCount); 
-        }
-
-        // 3. 处理 UTF-16BE 字节数组
-        if (charsetName == "utf-16be") {
-            const uint16_t* pData = reinterpret_cast<const uint16_t*>(data); 
-            size_t wcharsCount = dataLength / 2; 
-            std::wstring result(wcharsCount, L'\0'); 
-
-            for (size_t i = 0; i < wcharsCount; i++)
-            {
-                uint16_t val = pData[i]; 
-                result[i] = static_cast<wchar_t>((val >> 8) | (val << 8)); 
-            }
-            return result; 
-        }
-
-        // 4. 处理边长多字节数组
-        UINT codePage = 0; 
-        if (charsetName == "utf-8") {
-            codePage = CP_UTF8;
-        }
-        else if (charsetName == "gb18030") {
-            codePage = 54936; 
+        // 3. 解码 UTF-8, UTF-16BE, UTF-16LE, GB2312 编码的字符串，其他编码格式都会返回空字符串。
+        if (charsetName.starts_with("utf-16")) {
+            return DecodeFromUtf16(data, dataLength); 
         }
         else {
-            return {}; 
+            return DecodeFromMultiBytes(data, dataLength, charsetName); 
         }
-
-        int sizeNeeded = MultiByteToWideChar(
-            codePage, 0, data, static_cast<int>(dataLength), nullptr, 0); 
-
-        if (sizeNeeded == 0) {
-            return {}; 
-        }
-
-        std::wstring result(sizeNeeded, L'\0'); 
-        MultiByteToWideChar(
-            codePage, 0, data, static_cast<int>(dataLength), &result[0], sizeNeeded); 
-
-        return result; 
     }
 
     bool NovelBook::IsTitle(std::wstring_view line)
@@ -179,5 +153,70 @@ namespace winrt::Xuanwen::Novel::implementation
         else {
             return std::regex_search(line.begin(), line.begin() + 12, TITLE_REGEX); 
         }
+    }
+
+    bool NovelBook::IsUtf16LE(const char* data, size_t sampleSize)
+    {
+        int flags = IS_TEXT_UNICODE_SIGNATURE |
+            IS_TEXT_UNICODE_STATISTICS;
+
+        if (IsTextUnicode(data, static_cast<int>(sampleSize), &flags)) {
+            if (flags & IS_TEXT_UNICODE_SIGNATURE) {
+                return true; 
+            }
+
+            if (flags & IS_TEXT_UNICODE_STATISTICS) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    std::wstring NovelBook::DecodeFromUtf16(const char* data, size_t dataLength)
+    {
+        const size_t sampleSize = minOf(dataLength, 10240ul); 
+        if (IsUtf16LE(data, sampleSize)) {
+            size_t wcharsCount = dataLength / 2;
+            return std::wstring(reinterpret_cast<const wchar_t*>(data), wcharsCount);
+        }
+        else {
+            const uint16_t* pData = reinterpret_cast<const uint16_t*>(data);
+            size_t wcharsCount = dataLength / 2;
+            std::wstring result(wcharsCount, L'\0');
+
+            for (size_t i = 0; i < wcharsCount; i++)
+            {
+                uint16_t val = pData[i];
+                result[i] = static_cast<wchar_t>((val >> 8) | (val << 8));
+            }
+            return result;
+        }
+    }
+
+    std::wstring NovelBook::DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName)
+    {
+        UINT codePage = 0;
+        if (charsetName == "utf-8") {
+            codePage = CP_UTF8;
+        }
+        else if (charsetName == "gb18030") {
+            codePage = 54936;
+        }
+        else {
+            return {};
+        }
+
+        int sizeNeeded = MultiByteToWideChar(
+            codePage, 0, data, static_cast<int>(dataLength), nullptr, 0);
+
+        if (sizeNeeded == 0) {
+            return {};
+        }
+
+        std::wstring result(sizeNeeded, L'\0');
+        MultiByteToWideChar(
+            codePage, 0, data, static_cast<int>(dataLength), &result[0], sizeNeeded);
+
+        return result;
     }
 }

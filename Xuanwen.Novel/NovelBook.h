@@ -18,6 +18,10 @@ namespace winrt::Xuanwen::Novel::implementation
         static std::wstring DecodeBytesArray(const char* data, size_t dataLength); 
         static bool IsTitle(std::wstring_view line); 
 
+        static bool IsUtf16LE(const char* data, size_t sampleSize); 
+        static std::wstring DecodeFromUtf16(const char* data, size_t dataLength); 
+        static std::wstring DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName); 
+
         hstring m_filePath; 
         hstring m_bookName; 
         winrt::Xuanwen::Novel::ChaptersCollection m_chapters{ nullptr }; 
