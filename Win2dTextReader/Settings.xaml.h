@@ -12,17 +12,41 @@ namespace winrt::Win2dTextReader::implementation
         winrt::Windows::UI::Color m_foreground; 
         winrt::Microsoft::UI::Xaml::Media::FontFamily m_fontFamily{ nullptr };
         winrt::Microsoft::UI::Xaml::Media::Brush m_background{ nullptr }; 
-
         winrt::event<winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> m_propertyChanged; 
+        winrt::Windows::Foundation::Collections::IPropertySet m_localSettings{ nullptr };
+        winrt::Windows::Foundation::Collections::IObservableVector<winrt::Windows::Foundation::IInspectable> m_fontsizeValues{ nullptr }; 
+        winrt::Windows::Foundation::Collections::IObservableVector<winrt::Windows::Foundation::IInspectable> m_lineHeightValues{ nullptr }; 
 
+        template<typename T>
+        T GetValue(winrt::hstring key)
+        {
+            winrt::Windows::Foundation::IInspectable object = m_localSettings.Lookup(key);
+            return winrt::unbox_value<T>(object);
+        }
+
+        template<typename T>
+        void SaveValue(const T& value, winrt::hstring key)
+        {
+            winrt::Windows::Foundation::IInspectable object = winrt::box_value(value);
+            m_localSettings.Insert(key, object);
+        }
+
+        static winrt::hstring Format(double value, int digits); 
 
     public:
         Settings();
 
         void InitializeComponent();
+        void SetFontSizeValues(); 
+        void SetLineHeightValues(); 
+        bool Load(); 
+        void Save(); 
+        void UpdateUI(); 
 
         double ReaderLineHeight() const;
         void ReaderLineHeight(double value);
+
+        double ActualLineHeight() const { return m_lineHeight * m_fontSize; }
 
         double ReaderFontSize() const;
         void ReaderFontSize(double value);
@@ -39,6 +63,8 @@ namespace winrt::Win2dTextReader::implementation
         winrt::event_token PropertyChanged(winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
         void PropertyChanged(winrt::event_token const& token) noexcept;
 
+        void FontSizeComboBox_SelectionChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Controls::SelectionChangedEventArgs const& e);
+        void LineHeightComboBox_SelectionChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Controls::SelectionChangedEventArgs const& e);
     };
 }
 

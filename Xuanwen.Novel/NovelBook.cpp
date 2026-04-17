@@ -32,7 +32,7 @@ namespace winrt::Xuanwen::Novel::implementation
             novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromApplicationUriAsync(uri);
         }
         else {
-            co_await winrt::Windows::Storage::StorageFile::GetFileFromPathAsync(m_filePath);
+            novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromPathAsync(m_filePath);
         }
 
 

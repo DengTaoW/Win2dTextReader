@@ -23,7 +23,7 @@
                 小说信息
             </TextBlock>
 
-            <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
+            <ScrollView Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
                 <Grid RowSpacing="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -48,7 +48,7 @@
                     <TextBlock Grid.Row="3" Grid.Column="0">路径：</TextBlock>
                     <TextBlock Grid.Row="3" Grid.Column="1" x:Name="FilePathLabel" TextWrapping="Wrap" />
                 </Grid>
-            </ScrollViewer>
+            </ScrollView>
         </Grid>
     </Border>
 </UserControl>

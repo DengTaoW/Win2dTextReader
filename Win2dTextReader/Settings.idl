@@ -10,5 +10,11 @@ namespace Win2dTextReader
         Microsoft.UI.Xaml.Media.FontFamily ReaderFontFamily; 
         Windows.UI.Color ReaderForeground; 
         Microsoft.UI.Xaml.Media.Brush ReaderBackground; 
+
+        Double ActualLineHeight(); 
+        Boolean Load(); 
+        void Save(); 
+
+        void UpdateUI(); 
     }
 }

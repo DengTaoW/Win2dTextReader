@@ -34,10 +34,9 @@
                           HorizontalScrollMode="Disabled" 
                           ViewChanged="ContentScrollView_ViewChanged"
                           VerticalScrollMode="Auto">
-                <TextBlock x:Name="ChapterContentTextBlock" 
-                           TextWrapping="Wrap"
-                           
-                           />
+                <TextBlock x:Name="ChapterContentTextBlock"
+                           LineStackingStrategy="BlockLineHeight"
+                           TextWrapping="Wrap" />
 
                 <ScrollView.ContextFlyout>
                     <MenuFlyout>
@@ -55,7 +54,7 @@
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
 
-                        <MenuFlyoutItem Text="设置" >
+                        <MenuFlyoutItem Text="设置" Click="ShowSettings">
                             <MenuFlyoutItem.KeyboardAccelerators>
                                 <KeyboardAccelerator Modifiers="None" Key="F2" />
                             </MenuFlyoutItem.KeyboardAccelerators>

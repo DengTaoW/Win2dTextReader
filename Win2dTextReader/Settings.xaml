@@ -8,7 +8,45 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
+    <Border Padding="20" 
+            CornerRadius="{StaticResource OverlayCornerRadius}" 
+            BorderThickness="1"
+            BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+            Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
 
-    </Grid>
+        <Grid RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" >
+                设置
+            </TextBlock>
+
+            <ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" Grid.Row="1">
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="字体大小：" />
+                        
+                        <ComboBox x:Name="FontSizeComboBox" 
+                                  VerticalAlignment="Center"
+                                  SelectionChanged="FontSizeComboBox_SelectionChanged"/>
+
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="行高倍率：" />
+
+                        <ComboBox x:Name="LineHeightComboBox" 
+                                  VerticalAlignment="Center"
+                                  SelectionChanged="LineHeightComboBox_SelectionChanged"/>
+
+                    </StackPanel>
+                    
+                    
+                </StackPanel>
+            </ScrollView>
+
+        </Grid>
+    </Border>
 </UserControl>
