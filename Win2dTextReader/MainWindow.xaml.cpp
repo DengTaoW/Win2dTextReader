@@ -27,18 +27,17 @@ namespace winrt::Win2dTextReader::implementation
 		m_novelInfoControl = winrt::Win2dTextReader::NovelInfoControl(); 
 
 		// Window
+		this->ExtendsContentIntoTitleBar(true);
 		this->AppWindow().Changed({this, &MainWindow::OnWindowPropertyChanged});
-		this->SetWindowStyle(); 
+		this->RestoreRedingHistoryAsync(); 
 
 		// Popup
 		this->ContentsPopup().Child(m_bookContents);
 		this->NovelFileInfoPopup().Child(m_novelInfoControl); 
 	}
 
-	void MainWindow::SetWindowStyle()
+	winrt::fire_and_forget MainWindow::RestoreRedingHistoryAsync()
 	{
-		this->ExtendsContentIntoTitleBar(true); 
-
 		winrt::Microsoft::UI::Windowing::OverlappedPresenter presenter =
 			winrt::Microsoft::UI::Windowing::OverlappedPresenter::Create();
 		
@@ -49,15 +48,21 @@ namespace winrt::Win2dTextReader::implementation
 
 		this->AppWindow().SetPresenter(presenter);
 
-		if (m_isReadingHistoryValid) {
-			this->AppWindow().MoveAndResize(winrt::Windows::Graphics::RectInt32 {
+		if (!m_isReadingHistoryValid) {
+			winrt::Xuanwen::Novel::NovelBook book = m_readingHistory.LoadUaseges(); 
+			co_await this->ReadBookAsync(book, true); 
+		}
+		else {
+			winrt::Windows::Graphics::RectInt32 rect{
 				m_readingHistory.WindowPositionX(),
 				m_readingHistory.WindowPositionY(),
 				m_readingHistory.WindowSizeW(),
-				m_readingHistory.WindowSizeH() }
-				);
-		};
-
+				m_readingHistory.WindowSizeH()
+			};
+			this->AppWindow().MoveAndResize(rect); 
+			winrt::Xuanwen::Novel::NovelBook book{ m_readingHistory.FilePath() }; 
+			co_await this->ReadBookAsync(book, false);
+		}
 	}
 
 	void MainWindow::OnWindowPropertyChanged(
@@ -77,18 +82,31 @@ namespace winrt::Win2dTextReader::implementation
 		}
 	}
 
-	winrt::Windows::Foundation::IAsyncAction MainWindow::ReadBookAsync(winrt::hstring filePath, bool isNewBook)
+	winrt::Windows::Foundation::IAsyncAction MainWindow::ReadBookAsync(winrt::Xuanwen::Novel::NovelBook const& book, bool isNewBook)
 	{
-		// TODO 
-		// TODO 需要在 Window_Activated 中调用，以及打开新的文件时候调用。
-		return winrt::Windows::Foundation::IAsyncAction();
+		if (m_novelBook != nullptr) {
+			m_novelBook.Chapters().Clear();
+		}
+
+		m_novelBook = book;
+		co_await m_novelBook.InitializeAsync();
+
+		m_readingHistory.FilePath(m_novelBook.FilePath()); 
+		this->BookNameTextBlock().Text(m_novelBook.Name());
+
+		if (m_novelBook.Chapters().Size() > 0) {
+			uint32_t chapterIndex = 0u; 
+			if (!isNewBook && m_isReadingHistoryValid) {
+				chapterIndex = m_readingHistory.ChapterIndex(); 
+			}
+
+			this->SetCurrentChapter(m_novelBook.Chapters().GetAt(chapterIndex));
+			m_bookContents.SetSelectedIndex(chapterIndex);
+		}
 	}
 
 	winrt::fire_and_forget MainWindow::SetCurrentChapter(winrt::Xuanwen::Novel::Chapter const& chapter)
 	{
-		if (m_readingHistory.ChapterIndex() == chapter.Index())
-			co_return; 
-
 		winrt::apartment_context context; 
 
 		m_readingHistory.ChapterIndex(chapter.Index());
@@ -99,8 +117,14 @@ namespace winrt::Win2dTextReader::implementation
 		co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
 		co_await context; 
 
-		auto height = this->ContentScrollViewer().ScrollableHeight();
-		this->ContentScrollViewer().ScrollToVerticalOffset(-height);
+		double verticalOffset = -1.0 * this->ContentScrollView().VerticalOffset();
+
+		if (m_chaptersCounter == 0 && m_isReadingHistoryValid) {
+			verticalOffset = m_readingHistory.VerticalOffset(); 
+		}
+		++m_chaptersCounter; 
+
+		this->ContentScrollView().ScrollBy(0.0, verticalOffset);
 	}
 
 	winrt::fire_and_forget MainWindow::OnOpenButtonClicked(
@@ -115,21 +139,8 @@ namespace winrt::Win2dTextReader::implementation
 
 		if (result == nullptr)
 			co_return; 
-
-		if (m_novelBook != nullptr) {
-			m_novelBook.Chapters().Clear(); 
-		}
-
-		m_novelBook = winrt::Xuanwen::Novel::NovelBook(result.Path()); 
-		co_await m_novelBook.InitializeAsync();
-
-		this->BookNameTextBlock().Text(m_novelBook.Name()); 
-		
-		if (m_novelBook.Chapters().Size() > 0) {
-			m_readingHistory.ChapterIndex(INVALID_CHAPTER_INDEX); 
-			this->SetCurrentChapter(m_novelBook.Chapters().GetAt(0));
-			m_bookContents.SetSelectedIndex(0);
-		}
+		winrt::Xuanwen::Novel::NovelBook book{ result.Path() }; 
+		co_await this->ReadBookAsync(book, true);
 	}
 
 
@@ -160,7 +171,7 @@ namespace winrt::Win2dTextReader::implementation
 		this->SetCurrentChapter(chapter); 
 	}
 
-
+	// 显示目录列表
 	winrt::fire_and_forget MainWindow::ShowContents(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
@@ -188,6 +199,7 @@ namespace winrt::Win2dTextReader::implementation
 		this->ContentsPopup().IsOpen(true); 
 	}
 
+	// 显示小说信息列表
 	winrt::fire_and_forget MainWindow::ShowNovelInfo(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
@@ -221,6 +233,30 @@ namespace winrt::Win2dTextReader::implementation
 	{
 		m_readingHistory.Save(); 
 	}
+
+	// 记录滚动位置
+	void MainWindow::ContentScrollView_ViewChanged(
+		winrt::Microsoft::UI::Xaml::Controls::ScrollView const&, winrt::Windows::Foundation::IInspectable const&)
+	{
+		double verticalOffset = this->ContentScrollView().VerticalOffset(); 
+		m_readingHistory.VerticalOffset(verticalOffset);
+	}
+
+	// 向上滚动
+	void MainWindow::OnReaderRegionScrollUp(
+		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+	{
+		auto height = this->ContentScrollView().ActualHeight(); 
+		this->ContentScrollView().ScrollBy(0.0, -0.5 * height);
+	}
+
+	// 向下滚动
+	void MainWindow::OnReaderRegionScrollDown(
+		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+	{
+		auto height = this->ContentScrollView().ActualHeight();
+		this->ContentScrollView().ScrollBy(0.0, 0.5*height); 
+	}
 }
 
 
@@ -228,7 +264,4 @@ namespace winrt::Win2dTextReader::implementation
 
 
 
-void winrt::Win2dTextReader::implementation::MainWindow::Window_Activated(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::WindowActivatedEventArgs const& args)
-{
 
-}

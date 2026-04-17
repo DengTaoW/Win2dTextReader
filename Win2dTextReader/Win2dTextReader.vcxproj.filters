@@ -239,5 +239,13 @@
     <Page Include="NovelInfoControl.xaml">
       <Filter>Views</Filter>
     </Page>
+    <Page Include="Settings.xaml">
+      <Filter>Views</Filter>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Assets\使用说明.txt">
+      <Filter>Assets</Filter>
+    </Text>
   </ItemGroup>
 </Project>

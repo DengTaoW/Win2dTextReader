@@ -25,8 +25,16 @@ namespace winrt::Xuanwen::Novel::implementation
     winrt::Windows::Foundation::IAsyncAction NovelBook::InitializeAsync()
     {
         // 1. 获取 Storage File
-        winrt::Windows::Storage::StorageFile novelFile =
+        winrt::Windows::Storage::StorageFile novelFile{ nullptr }; 
+
+        if (m_filePath.starts_with(L"ms-appx")) {
+            winrt::Windows::Foundation::Uri uri{ m_filePath }; 
+            novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromApplicationUriAsync(uri);
+        }
+        else {
             co_await winrt::Windows::Storage::StorageFile::GetFileFromPathAsync(m_filePath);
+        }
+
 
         m_bookName = novelFile.DisplayName(); 
 

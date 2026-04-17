@@ -1,0 +1,14 @@
+namespace Win2dTextReader
+{
+    [default_interface]
+    runtimeclass Settings : Microsoft.UI.Xaml.Controls.UserControl, Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        Settings();
+        
+        Double ReaderLineHeight; 
+        Double ReaderFontSize;
+        Microsoft.UI.Xaml.Media.FontFamily ReaderFontFamily; 
+        Windows.UI.Color ReaderForeground; 
+        Microsoft.UI.Xaml.Media.Brush ReaderBackground; 
+    }
+}

@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Closed="Window_Closed"
-    Activated="Window_Activated"
     Title="Win2dTextReader">
 
     <Window.SystemBackdrop>
@@ -29,67 +28,73 @@
         </Grid>
 
         <Grid Grid.Row="1" x:Name="ReaderRegion">
-            <Grid.ContextFlyout>
-                <MenuFlyout>
-                    <MenuFlyoutItem Text="打开" Click="OnOpenButtonClicked">
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Modifiers="Control" Key="O" />
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-
-                    <MenuFlyoutSeparator /> 
-
-                    <MenuFlyoutItem Text="目录" Click="ShowContents">
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Modifiers="None" Key="F1" /> 
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-
-                    <MenuFlyoutItem Text="设置" >
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Modifiers="None" Key="F2" />
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-
-
-                    <MenuFlyoutItem Text="小说信息" Click="ShowNovelInfo">
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Modifiers="None" Key="F3" /> 
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-
-                    <MenuFlyoutSeparator />
-
-                    <MenuFlyoutSubItem Text="阅读" >
-                        <MenuFlyoutItem Text="向上滚动">
-                            <MenuFlyoutItem.KeyboardAccelerators>
-                                <KeyboardAccelerator Modifiers="None" Key="Up" /> 
-                            </MenuFlyoutItem.KeyboardAccelerators>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem Text="向下滚动">
-                            <MenuFlyoutItem.KeyboardAccelerators>
-                                <KeyboardAccelerator Modifiers="None" Key="Down" />
-                            </MenuFlyoutItem.KeyboardAccelerators>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem Text="上一章" Click="OnPreviousChapterButtonClicked">
-                            <MenuFlyoutItem.KeyboardAccelerators>
-                                <KeyboardAccelerator Modifiers="None" Key="Left" />
-                            </MenuFlyoutItem.KeyboardAccelerators>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem Text="下一章" Click="OnNextChapterButtonClicked" >
-                            <MenuFlyoutItem.KeyboardAccelerators>
-                                <KeyboardAccelerator Modifiers="None" Key="Right" /> 
-                            </MenuFlyoutItem.KeyboardAccelerators>
-                        </MenuFlyoutItem>
-                    </MenuFlyoutSubItem>
-                </MenuFlyout>
-            </Grid.ContextFlyout>
             <!-- 阅读区域 -->
-            <ScrollViewer x:Name="ContentScrollViewer" 
+            <ScrollView x:Name="ContentScrollView" 
+                          ZoomMode="Disabled"
                           HorizontalScrollMode="Disabled" 
+                          ViewChanged="ContentScrollView_ViewChanged"
                           VerticalScrollMode="Auto">
-                <TextBlock x:Name="ChapterContentTextBlock" TextWrapping="Wrap"/>
-            </ScrollViewer>
+                <TextBlock x:Name="ChapterContentTextBlock" 
+                           TextWrapping="Wrap"
+                           
+                           />
+
+                <ScrollView.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="打开" Click="OnOpenButtonClicked">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="Control" Key="O" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+
+                        <MenuFlyoutSeparator />
+
+                        <MenuFlyoutItem Text="目录" Click="ShowContents">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="None" Key="F1" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+
+                        <MenuFlyoutItem Text="设置" >
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="None" Key="F2" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+
+
+                        <MenuFlyoutItem Text="小说信息" Click="ShowNovelInfo">
+                            <MenuFlyoutItem.KeyboardAccelerators>
+                                <KeyboardAccelerator Modifiers="None" Key="F3" />
+                            </MenuFlyoutItem.KeyboardAccelerators>
+                        </MenuFlyoutItem>
+
+                        <MenuFlyoutSeparator />
+
+                        <MenuFlyoutSubItem Text="阅读" >
+                            <MenuFlyoutItem Text="向上滚动" Click="OnReaderRegionScrollUp">
+                                <MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="None" Key="Up" />
+                                </MenuFlyoutItem.KeyboardAccelerators>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem Text="向下滚动" Click="OnReaderRegionScrollDown">
+                                <MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="None" Key="Down" />
+                                </MenuFlyoutItem.KeyboardAccelerators>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem Text="上一章" Click="OnPreviousChapterButtonClicked">
+                                <MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="None" Key="Left" />
+                                </MenuFlyoutItem.KeyboardAccelerators>
+                            </MenuFlyoutItem>
+                            <MenuFlyoutItem Text="下一章" Click="OnNextChapterButtonClicked" >
+                                <MenuFlyoutItem.KeyboardAccelerators>
+                                    <KeyboardAccelerator Modifiers="None" Key="Right" />
+                                </MenuFlyoutItem.KeyboardAccelerators>
+                            </MenuFlyoutItem>
+                        </MenuFlyoutSubItem>
+                    </MenuFlyout>
+                </ScrollView.ContextFlyout>
+            </ScrollView>
             
             <!-- 目录 -->
             <Popup x:Name="ContentsPopup" IsLightDismissEnabled="True" />

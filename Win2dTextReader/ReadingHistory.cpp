@@ -15,7 +15,7 @@ namespace winrt::Win2dTextReader::implementation
 
 	constexpr wchar_t WINDOW_SIZE_W_KEY[]{ L"RH:WINDOW_SIZE_W" }; 
 	constexpr wchar_t WINDOW_SIZE_H_KEY[]{ L"RH:WINDOW_SIZE_H" }; 
-	
+	constexpr wchar_t VERTICAL_OFFSET_KEY[]{ L"RH:VERTICAL_OFFSET" }; 
 
 
 	ReadingHistory::ReadingHistory()
@@ -24,6 +24,7 @@ namespace winrt::Win2dTextReader::implementation
 		, m_windowSizeW{}
 		, m_windowSizeH{}
 		, m_chapterIndex{}
+		, m_verticalOffset{}
 	{
 		auto appData = winrt::Microsoft::Windows::Storage::ApplicationData::GetDefault();
 		m_localSettings = appData.LocalSettings().Values();
@@ -83,6 +84,16 @@ namespace winrt::Win2dTextReader::implementation
 		m_windowSizeH = value; 
 	}
 
+	double ReadingHistory::VerticalOffset() const
+	{
+		return m_verticalOffset; 
+	}
+
+	void ReadingHistory::VerticalOffset(double value)
+	{
+		m_verticalOffset = value;
+	}
+
 	bool ReadingHistory::Load()
 	{
 		if (!m_localSettings.HasKey(READING_HISTORY_KEY)) {
@@ -95,6 +106,7 @@ namespace winrt::Win2dTextReader::implementation
 		m_windowPositionY = this->GetValue<int32_t>(WINDOW_POSITION_Y_KEY); 
 		m_windowSizeW = this->GetValue<int32_t>(WINDOW_SIZE_W_KEY); 
 		m_windowSizeH = this->GetValue<int32_t>(WINDOW_SIZE_H_KEY); 
+		m_verticalOffset = this->GetValue<double>(VERTICAL_OFFSET_KEY);
 
 		return true; 
 	}
@@ -109,5 +121,14 @@ namespace winrt::Win2dTextReader::implementation
 		this->SaveValue<int32_t>(m_windowPositionY, WINDOW_POSITION_Y_KEY); 
 		this->SaveValue<int32_t>(m_windowSizeW, WINDOW_SIZE_W_KEY);
 		this->SaveValue<int32_t>(m_windowSizeH, WINDOW_SIZE_H_KEY);
+
+		this->SaveValue<double>(m_verticalOffset, VERTICAL_OFFSET_KEY);
 	}
+
+	winrt::Xuanwen::Novel::NovelBook ReadingHistory::LoadUaseges()
+	{
+		const winrt::hstring filePath = L"ms-appx:///Assets/使用说明.txt";
+		return winrt::Xuanwen::Novel::NovelBook(filePath); 
+	}
+	// TODO 加入设置界面
 }

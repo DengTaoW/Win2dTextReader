@@ -12,6 +12,7 @@ namespace winrt::Win2dTextReader::implementation
         int32_t m_windowSizeW; 
         int32_t m_windowSizeH; 
         uint32_t m_chapterIndex; 
+        double m_verticalOffset; 
         winrt::Windows::Foundation::Collections::IPropertySet m_localSettings{ nullptr }; 
 
         template<typename T>
@@ -49,9 +50,13 @@ namespace winrt::Win2dTextReader::implementation
         int32_t WindowSizeH() const;
         void WindowSizeH(int32_t value);
 
+        double VerticalOffset() const;
+        void VerticalOffset(double value);
+
         bool Load(); 
         void Save();
 
+        winrt::Xuanwen::Novel::NovelBook LoadUaseges();
     };
 }
 namespace winrt::Win2dTextReader::factory_implementation
