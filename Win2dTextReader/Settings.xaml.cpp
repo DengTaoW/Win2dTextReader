@@ -36,7 +36,6 @@ namespace winrt::Win2dTextReader::implementation
             m_fontsizeValues.Append(winrt::box_value(str));
         }
         this->FontSizeComboBox().ItemsSource(m_fontsizeValues); 
-       
     }
 
     void Settings::SetLineHeightValues()
