@@ -8,15 +8,11 @@ namespace winrt::Xuanwen::Novel::implementation
     {
         Chapter() = default;
 
-        Chapter(uint32_t index, hstring const& title, hstring const& text);
+        Chapter(uint32_t index, hstring const& text);
+
         uint32_t Index() const;
-        void Index(uint32_t value);
-
-        hstring Title() const;
-        void Title(hstring const& value);
-
+        hstring Title();
         hstring Text() const;
-        void Text(hstring const& value);
 
     private:
         uint32_t m_index{};

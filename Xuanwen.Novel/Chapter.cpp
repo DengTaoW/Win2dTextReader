@@ -4,8 +4,9 @@
 
 namespace winrt::Xuanwen::Novel::implementation
 {
-    Chapter::Chapter(uint32_t index, hstring const& title, hstring const& text)
-        : m_index{ index }, m_title{ title }, m_text {text}
+    Chapter::Chapter(uint32_t index, hstring const& text)
+        : m_index {index}
+        , m_text {text}
     {
     }
 
@@ -14,18 +15,25 @@ namespace winrt::Xuanwen::Novel::implementation
         return m_index; 
     }
 
-    void Chapter::Index(uint32_t value)
+    hstring Chapter::Title()
     {
-        m_index = value; 
-    }
+        if (!m_title.empty())
+            return m_title; 
 
-    hstring Chapter::Title() const
-    {
+        constexpr wchar_t FIRST_TITLE[] { L"前言" }; 
+        std::wstring_view textView{ m_text }; 
+        
+        size_t lineEnd = textView.find_first_of(L'\n', 0); 
+        if (lineEnd == std::wstring_view::npos) {
+            m_title = winrt::hstring{ FIRST_TITLE }; 
+        }
+        else {
+            std::wstring result{ textView.substr(0, lineEnd) };
+            if (result.back() == L'\r')
+                result.pop_back();
+            m_title = winrt::hstring{ result }; 
+        }
         return m_title; 
-    }
-    void Chapter::Title(hstring const& value)
-    {
-        m_title = value; 
     }
 
     hstring Chapter::Text() const
@@ -33,8 +41,4 @@ namespace winrt::Xuanwen::Novel::implementation
         return m_text; 
     }
 
-    void Chapter::Text(hstring const& value)
-    {
-        m_text = value;
-    }
 }

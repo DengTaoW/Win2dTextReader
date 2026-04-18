@@ -24,6 +24,8 @@ namespace winrt::Xuanwen::Novel::implementation
         static std::wstring DecodeFromUtf16(const char* data, size_t dataLength); 
         static std::wstring DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName); 
 
+        void GenerateChapters(std::wstring_view content); 
+
         hstring m_filePath; 
         hstring m_bookName; 
         uint32_t m_totalChars; 
