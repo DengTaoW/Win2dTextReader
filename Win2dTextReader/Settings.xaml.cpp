@@ -8,12 +8,13 @@
 constexpr wchar_t SETTINGS_KEY[]{ L"ST" }; 
 constexpr wchar_t FONT_SIZE_KEY[]{ L"ST:FONT_SIZE" }; 
 constexpr wchar_t LINE_HEIGHT_KEY[]{ L"ST:LINE_HEIGHT" }; 
+constexpr wchar_t FONT_FAMILY_KEY[]{ L"ST:FONT_FAMILY" };
 
 namespace winrt::Win2dTextReader::implementation
 {
     Settings::Settings()
-        : m_lineHeight {1.4}
-        , m_fontSize {14.0}
+        : m_lineHeight {1.6}
+        , m_fontSize {18.0}
 	{
         auto appdata = winrt::Microsoft::Windows::Storage::ApplicationData::GetDefault(); 
         m_localSettings = appdata.LocalSettings().Values(); 
@@ -24,6 +25,7 @@ namespace winrt::Win2dTextReader::implementation
 		SettingsT::InitializeComponent(); 
         this->SetFontSizeValues(); 
         this->SetLineHeightValues(); 
+        m_fontFamily = winrt::Microsoft::UI::Xaml::Media::FontFamily(L"SimSun"); 
 	}
 
     void Settings::SetFontSizeValues()
@@ -59,6 +61,9 @@ namespace winrt::Win2dTextReader::implementation
 
         m_fontSize = this->GetValue<double>(FONT_SIZE_KEY); 
         m_lineHeight = this->GetValue<double>(LINE_HEIGHT_KEY); 
+        winrt::hstring fontName = this->GetValue<winrt::hstring>(FONT_FAMILY_KEY);
+        m_fontFamily = winrt::Microsoft::UI::Xaml::Media::FontFamily(fontName);
+
         return true; 
     }
 
@@ -70,6 +75,10 @@ namespace winrt::Win2dTextReader::implementation
 
         this->SaveValue<double>(m_fontSize, FONT_SIZE_KEY); 
         this->SaveValue<double>(m_lineHeight, LINE_HEIGHT_KEY); 
+        
+        if (m_fontFamily != nullptr) {
+            this->SaveValue<hstring>(m_fontFamily.Source(), FONT_FAMILY_KEY); 
+        }
     }
 
     void Settings::UpdateUI()
@@ -99,7 +108,18 @@ namespace winrt::Win2dTextReader::implementation
                 break;
             }
         }
-        
+
+        // FontFamily 
+        targetStr = m_fontFamily.Source(); 
+
+        for (uint32_t i = 0; i < this->FontFamilyComboBox().Items().Size(); ++i) {
+            winrt::Windows::Foundation::IInspectable item = this->FontFamilyComboBox().Items().GetAt(i);
+            auto textBlock = item.as<winrt::Microsoft::UI::Xaml::Controls::TextBlock>();
+            if (textBlock.FontFamily().Source() == targetStr) {
+                this->FontFamilyComboBox().SelectedIndex(i); 
+                break; 
+            }
+        }
     }
 
     double Settings::ReaderLineHeight() const
@@ -134,8 +154,13 @@ namespace winrt::Win2dTextReader::implementation
     }
     void Settings::ReaderFontFamily(winrt::Microsoft::UI::Xaml::Media::FontFamily const& value)
     {
+        if (m_fontFamily == nullptr)
+            goto NEXT;
+
         if (m_fontFamily.Source() == value.Source())
             return; 
+
+        NEXT:
         m_fontFamily = winrt::Microsoft::UI::Xaml::Media::FontFamily(value); 
         m_propertyChanged(*this, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs(L"ReaderFontFamily"));
     }
@@ -211,7 +236,21 @@ namespace winrt::Win2dTextReader::implementation
         StringCchPrintfW(buffer, _countof(buffer), L"%.*f", digits, value);
         return winrt::hstring{ buffer };
     }
+
+    void Settings::FontFamilyComboBox_SelectionChanged(
+        winrt::Windows::Foundation::IInspectable const&, 
+        winrt::Microsoft::UI::Xaml::Controls::SelectionChangedEventArgs const& e)
+    {
+        if (e.AddedItems().Size() == 0)
+            return;
+
+        winrt::Windows::Foundation::IInspectable item = e.AddedItems().GetAt(0); 
+        auto textBlock = item.as<winrt::Microsoft::UI::Xaml::Controls::TextBlock>(); 
+        this->ReaderFontFamily(textBlock.FontFamily());
+    }
 }
+
+
 
 
 

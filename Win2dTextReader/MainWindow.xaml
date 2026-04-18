@@ -35,6 +35,7 @@
                           ViewChanged="ContentScrollView_ViewChanged"
                           VerticalScrollMode="Auto">
                 <TextBlock x:Name="ChapterContentTextBlock"
+                           FontFamily="SimSun"
                            LineStackingStrategy="BlockLineHeight"
                            TextWrapping="Wrap" />
 

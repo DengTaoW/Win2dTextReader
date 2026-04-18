@@ -35,7 +35,12 @@ namespace winrt::Win2dTextReader::implementation
         if (this->ContentsListView().SelectedIndex() == chapterIndex)
             return; 
 
+        m_counter = 0; 
         this->ContentsListView().SelectedIndex(chapterIndex); 
+        this->ContentsListView().ScrollIntoView(
+            m_chapters.GetAt(chapterIndex),
+            winrt::Microsoft::UI::Xaml::Controls::ScrollIntoViewAlignment::Leading
+        );
     }
 
     winrt::event_token BookContents::SelectedChapterChanged(winrt::Win2dTextReader::ChapterAction const& handler)
@@ -53,6 +58,12 @@ namespace winrt::Win2dTextReader::implementation
         winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::Controls::SelectionChangedEventArgs const& e)
     {
         if (e.AddedItems().Size() == 0)
+            return; 
+        ++m_counter; 
+
+        
+
+        if (m_counter == 1) 
             return; 
 
         winrt::Windows::Foundation::IInspectable selectedItem = e.AddedItems().GetAt(0); 

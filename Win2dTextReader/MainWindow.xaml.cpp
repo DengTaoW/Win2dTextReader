@@ -4,6 +4,7 @@
 #include "MainWindow.g.cpp"
 #endif
 
+constexpr float POPUP_BOTTOM_PADDING = 20.0F; 
 
 namespace winrt::Win2dTextReader::implementation
 {
@@ -30,10 +31,9 @@ namespace winrt::Win2dTextReader::implementation
 		m_settings = winrt::Win2dTextReader::Settings(); 
 		m_settings.PropertyChanged({this, &MainWindow::SettingsPropertyChanged});
 
-		if (m_settings.Load()) {
-			this->ChapterContentTextBlock().FontSize(m_settings.ReaderFontSize()); 
-			this->ChapterContentTextBlock().LineHeight(m_settings.ActualLineHeight()); 
-		}
+		this->ChapterContentTextBlock().FontSize(m_settings.ReaderFontSize());
+		this->ChapterContentTextBlock().LineHeight(m_settings.ActualLineHeight());
+		this->ChapterContentTextBlock().FontFamily(m_settings.ReaderFontFamily());
 		
 		// Window
 		this->ExtendsContentIntoTitleBar(true);
@@ -110,8 +110,8 @@ namespace winrt::Win2dTextReader::implementation
 				chapterIndex = m_readingHistory.ChapterIndex(); 
 			}
 
+			m_bookContents.SetChapters(m_novelBook.Chapters()); 
 			this->SetCurrentChapter(m_novelBook.Chapters().GetAt(chapterIndex));
-			m_bookContents.SetSelectedIndex(chapterIndex);
 		}
 	}
 
@@ -127,6 +127,9 @@ namespace winrt::Win2dTextReader::implementation
 		else if (propertyName == L"ReaderLineHeight") 
 		{
 			this->ChapterContentTextBlock().LineHeight(m_settings.ActualLineHeight());
+		}
+		else if (propertyName == L"ReaderFontFamily") {
+			this->ChapterContentTextBlock().FontFamily(m_settings.ReaderFontFamily()); 
 		}
 	}
 
@@ -209,36 +212,31 @@ namespace winrt::Win2dTextReader::implementation
 		float width = containerSize.x * 0.5f; 
 		float height = containerSize.y * 0.9f; 
 		float left = (containerSize.x - width) / 2.0f; 
-		float top = (containerSize.y - height) / 2.0f; 
+		float top = containerSize.y - height - POPUP_BOTTOM_PADDING; 
 
 		m_bookContents.Width(width); 
 		m_bookContents.Height(height); 
-		m_bookContents.SetChapters(m_novelBook.Chapters());
-		m_bookContents.SetSelectedIndex(m_readingHistory.ChapterIndex()); 
 
 		this->ContentsPopup().HorizontalOffset(left); 
 		this->ContentsPopup().VerticalOffset(top); 
+		this->ContentsPopup().IsOpen(true); 
 
 		co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
 		co_await context; 
-		this->ContentsPopup().IsOpen(true); 
+		m_bookContents.SetSelectedIndex(m_readingHistory.ChapterIndex()); 
 	}
 
 	// 显示小说信息列表
-	winrt::fire_and_forget MainWindow::ShowNovelInfo(
+	void MainWindow::ShowNovelInfo(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		if (m_novelBook == nullptr)
-			co_return; 
-
-		winrt::apartment_context context; 
 
 		// 计算大小和位置
 		winrt::Windows::Foundation::Numerics::float2 containerSize = this->ReaderRegion().ActualSize();
 		float width = containerSize.x * 0.5f;
-		float height = containerSize.y * 0.4f;
+		float height = containerSize.y * 0.5f;
 		float left = (containerSize.x - width) / 2.0f;
-		float top = (containerSize.y - height) / 2.0f;
+		float top = containerSize.y - height - POPUP_BOTTOM_PADDING;
 
 		m_novelInfoControl.Width(width);
 		m_novelInfoControl.Height(height);
@@ -247,8 +245,6 @@ namespace winrt::Win2dTextReader::implementation
 		this->NovelFileInfoPopup().HorizontalOffset(left);
 		this->NovelFileInfoPopup().VerticalOffset(top);
 
-		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
-		co_await context;
 		this->NovelFileInfoPopup().IsOpen(true);
 	}
 
@@ -295,11 +291,10 @@ namespace winrt::Win2dTextReader::implementation
 		float width = containerSize.x * 0.6f;
 		float height = containerSize.y * 0.6f;
 		float left = (containerSize.x - width) / 2.0f;
-		float top = (containerSize.y - height) / 2.0f;
+		float top = containerSize.y - height - POPUP_BOTTOM_PADDING;
 
 		m_settings.Width(width);
 		m_settings.Height(height);
-		m_settings.UpdateUI(); 
 
 		this->SettingsPopup().HorizontalOffset(left);
 		this->SettingsPopup().VerticalOffset(top);
@@ -307,6 +302,7 @@ namespace winrt::Win2dTextReader::implementation
 		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
 		co_await context;
 		this->SettingsPopup().IsOpen(true);
+		m_settings.UpdateUI();
 	}
 }
 

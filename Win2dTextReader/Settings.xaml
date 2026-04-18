@@ -24,29 +24,44 @@
                 设置
             </TextBlock>
 
-            <ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto" Grid.Row="1">
-                <StackPanel Orientation="Vertical" Spacing="10">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock VerticalAlignment="Center"
-                                   Text="字体大小：" />
-                        
-                        <ComboBox x:Name="FontSizeComboBox" 
-                                  VerticalAlignment="Center"
-                                  SelectionChanged="FontSizeComboBox_SelectionChanged"/>
+            <Grid RowSpacing="10" ColumnSpacing="10" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-                        <TextBlock VerticalAlignment="Center"
-                                   Text="行高倍率：" />
+                <ComboBox x:Name="FontSizeComboBox"
+                          Grid.Row="0" Grid.Column="0"
+                          Header="字体大小"
+                          HorizontalAlignment="Stretch"
+                          SelectionChanged="FontSizeComboBox_SelectionChanged"/>
 
-                        <ComboBox x:Name="LineHeightComboBox" 
-                                  VerticalAlignment="Center"
-                                  SelectionChanged="LineHeightComboBox_SelectionChanged"/>
+                <ComboBox x:Name="FontFamilyComboBox"
+                          Grid.Row="0" Grid.Column="1"
+                          Header="字体名称"
+                          HorizontalAlignment="Stretch"
+                          SelectionChanged="FontFamilyComboBox_SelectionChanged">
+                    <ComboBox.Items>
+                        <TextBlock Text="宋体" FontFamily="SimSun" />
+                        <TextBlock Text="楷体" FontFamily="KaiTi" />
+                        <TextBlock Text="等线" FontFamily="DengXian" />
+                        <TextBlock Text="中黑" FontFamily="SimHei" />
+                        <TextBlock Text="微软雅黑" FontFamily="Microsoft YaHei" /> 
+                    </ComboBox.Items>
+                </ComboBox>
 
-                    </StackPanel>
-                    
-                    
-                </StackPanel>
-            </ScrollView>
-
+                <ComboBox x:Name="LineHeightComboBox"
+                          Grid.Row="1" Grid.Column="0"
+                          Header="行高"
+                          HorizontalAlignment="Stretch"
+                          SelectionChanged="LineHeightComboBox_SelectionChanged"/>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

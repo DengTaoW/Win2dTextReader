@@ -11,7 +11,7 @@
   <Identity
     Name="12E8CBCB.TextNovelReader"
     Publisher="CN=5F04ED61-8848-4468-B15D-A5BA8EA18B85"
-    Version="1.1.1.0" />
+    Version="1.1.4.0" />
 
   <mp:PhoneIdentity PhoneProductId="c2e7d018-6804-4d1d-a69d-2c0f931b2e36" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

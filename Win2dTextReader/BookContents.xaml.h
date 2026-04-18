@@ -19,6 +19,7 @@ namespace winrt::Win2dTextReader::implementation
 
     private: 
         uint32_t m_totalChapters{ 0 }; 
+        uint32_t m_counter{ 0 }; 
         winrt::Windows::Foundation::Collections::IVector<winrt::Xuanwen::Novel::Chapter> m_chapters{ nullptr }; 
         winrt::event<winrt::Win2dTextReader::ChapterAction> m_selectedChapterChanged; 
     };
