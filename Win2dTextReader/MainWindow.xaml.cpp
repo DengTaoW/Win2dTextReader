@@ -268,16 +268,33 @@ namespace winrt::Win2dTextReader::implementation
 	void MainWindow::OnReaderRegionScrollUp(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		auto height = this->ContentScrollView().ActualHeight(); 
-		this->ContentScrollView().ScrollBy(0.0, -0.5 * height);
+		auto viewportHeight = this->ContentScrollView().ViewportHeight(); 
+		auto lineHeight = m_settings.ActualLineHeight();
+		auto scrollAmount = std::floor(viewportHeight / lineHeight) * lineHeight; 
+
+		auto verticalOffset = this->ContentScrollView().VerticalOffset(); 
+		if (verticalOffset < scrollAmount) {
+			scrollAmount = verticalOffset; 
+		}
+
+		this->ContentScrollView().ScrollBy(0.0, -scrollAmount);
 	}
 
 	// 向下滚动
 	void MainWindow::OnReaderRegionScrollDown(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		auto height = this->ContentScrollView().ActualHeight();
-		this->ContentScrollView().ScrollBy(0.0, 0.5*height); 
+		auto viewportHeight = this->ContentScrollView().ViewportHeight();
+		auto lineHeight = m_settings.ActualLineHeight();
+		auto scrollAmount = std::floor(viewportHeight / lineHeight) * lineHeight;
+
+		auto restAmount = this->ContentScrollView().ScrollableHeight() - this->ContentScrollView().VerticalOffset();
+		if (restAmount < 0) {
+			return;
+		}
+
+		scrollAmount = restAmount > scrollAmount ? scrollAmount : restAmount;
+		this->ContentScrollView().ScrollBy(0.0, scrollAmount);
 	}
 
 	// 设置 Popup

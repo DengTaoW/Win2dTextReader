@@ -71,12 +71,12 @@
                         <MenuFlyoutSeparator />
 
                         <MenuFlyoutSubItem Text="阅读" >
-                            <MenuFlyoutItem Text="向上滚动" Click="OnReaderRegionScrollUp">
+                            <MenuFlyoutItem Text="向上翻页" Click="OnReaderRegionScrollUp">
                                 <MenuFlyoutItem.KeyboardAccelerators>
                                     <KeyboardAccelerator Modifiers="None" Key="Up" />
                                 </MenuFlyoutItem.KeyboardAccelerators>
                             </MenuFlyoutItem>
-                            <MenuFlyoutItem Text="向下滚动" Click="OnReaderRegionScrollDown">
+                            <MenuFlyoutItem Text="向下翻页" Click="OnReaderRegionScrollDown">
                                 <MenuFlyoutItem.KeyboardAccelerators>
                                     <KeyboardAccelerator Modifiers="None" Key="Down" />
                                 </MenuFlyoutItem.KeyboardAccelerators>
