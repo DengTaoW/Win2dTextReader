@@ -87,8 +87,11 @@ namespace winrt::Win2dTextReader::implementation
 
 		if (args.DidSizeChange()) {
 			auto newSize = appwindow.Size(); 
-			m_readingHistory.WindowSizeW(newSize.Width); 
-			m_readingHistory.WindowSizeH(newSize.Height);
+			if(newSize.Width > 50)
+				m_readingHistory.WindowSizeW(newSize.Width); 
+
+			if (newSize.Height > 50)
+				m_readingHistory.WindowSizeH(newSize.Height);
 		}
 	}
 
