@@ -35,7 +35,9 @@
                           ViewChanged="ContentScrollView_ViewChanged"
                           VerticalScrollMode="Auto">
                 <TextBlock x:Name="ChapterContentTextBlock"
-                           FontFamily="SimSun"
+                           FontFamily="{x:Bind ReaderSettings.ReaderFontFamily, Mode=OneWay}"
+                           LineHeight="{x:Bind ReaderSettings.ReaderLineHeight, Mode=OneWay}"
+                           FontSize="{x:Bind ReaderSettings.ReaderFontSize, Mode=OneWay}"
                            LineStackingStrategy="BlockLineHeight"
                            TextWrapping="Wrap" />
 

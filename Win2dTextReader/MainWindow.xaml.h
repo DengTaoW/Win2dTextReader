@@ -18,11 +18,11 @@ namespace winrt::Win2dTextReader::implementation
 	public:
 		MainWindow();
 		void InitializeComponent();
+		winrt::Win2dTextReader::Settings ReaderSettings(); 
+
 		winrt::fire_and_forget RestoreRedingHistoryAsync(); 
 		void OnWindowPropertyChanged(winrt::Microsoft::UI::Windowing::AppWindow const& appwindow, winrt::Microsoft::UI::Windowing::AppWindowChangedEventArgs const args);
 		winrt::Windows::Foundation::IAsyncAction ReadBookAsync(winrt::Xuanwen::Novel::NovelBook const& book, bool isNewBook);
-		void SettingsPropertyChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs const& e);
-
 
 		winrt::fire_and_forget SetCurrentChapter(winrt::Xuanwen::Novel::Chapter const& chapter); 
 		winrt::fire_and_forget OnOpenButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);

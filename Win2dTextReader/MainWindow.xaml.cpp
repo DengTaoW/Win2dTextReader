@@ -25,15 +25,9 @@ namespace winrt::Win2dTextReader::implementation
 
 		m_bookContents = winrt::Win2dTextReader::BookContents(); 
 		m_bookContents.SelectedChapterChanged({this, &MainWindow::SetCurrentChapter});
-		
-		m_novelInfoControl = winrt::Win2dTextReader::NovelInfoControl(); 
-		
-		m_settings = winrt::Win2dTextReader::Settings(); 
-		m_settings.PropertyChanged({this, &MainWindow::SettingsPropertyChanged});
 
-		this->ChapterContentTextBlock().FontSize(m_settings.ReaderFontSize());
-		this->ChapterContentTextBlock().LineHeight(m_settings.ActualLineHeight());
-		this->ChapterContentTextBlock().FontFamily(m_settings.ReaderFontFamily());
+		m_novelInfoControl = winrt::Win2dTextReader::NovelInfoControl(); 
+		m_settings = winrt::Win2dTextReader::Settings(); 
 		
 		// Window
 		this->ExtendsContentIntoTitleBar(true);
@@ -44,6 +38,11 @@ namespace winrt::Win2dTextReader::implementation
 		this->ContentsPopup().Child(m_bookContents);
 		this->NovelFileInfoPopup().Child(m_novelInfoControl); 
 		this->SettingsPopup().Child(m_settings);
+	}
+
+	winrt::Win2dTextReader::Settings MainWindow::ReaderSettings()
+	{
+		return m_settings; 
 	}
 
 	winrt::fire_and_forget MainWindow::RestoreRedingHistoryAsync()
@@ -115,24 +114,6 @@ namespace winrt::Win2dTextReader::implementation
 
 			m_bookContents.SetChapters(m_novelBook.Chapters()); 
 			this->SetCurrentChapter(m_novelBook.Chapters().GetAt(chapterIndex));
-		}
-	}
-
-	void MainWindow::SettingsPropertyChanged(
-		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs const& e)
-	{
-		winrt::hstring propertyName = e.PropertyName(); 
-		if (propertyName == L"ReaderFontSize") 
-		{
-			this->ChapterContentTextBlock().FontSize(m_settings.ReaderFontSize());
-			this->ChapterContentTextBlock().LineHeight(m_settings.ActualLineHeight());
-		}
-		else if (propertyName == L"ReaderLineHeight") 
-		{
-			this->ChapterContentTextBlock().LineHeight(m_settings.ActualLineHeight());
-		}
-		else if (propertyName == L"ReaderFontFamily") {
-			this->ChapterContentTextBlock().FontFamily(m_settings.ReaderFontFamily()); 
 		}
 	}
 
@@ -272,7 +253,7 @@ namespace winrt::Win2dTextReader::implementation
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		auto viewportHeight = this->ContentScrollView().ViewportHeight(); 
-		auto lineHeight = m_settings.ActualLineHeight();
+		auto lineHeight = m_settings.ReaderLineHeight();
 		auto scrollAmount = std::floor(viewportHeight / lineHeight) * lineHeight; 
 
 		auto verticalOffset = this->ContentScrollView().VerticalOffset(); 
@@ -288,7 +269,7 @@ namespace winrt::Win2dTextReader::implementation
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		auto viewportHeight = this->ContentScrollView().ViewportHeight();
-		auto lineHeight = m_settings.ActualLineHeight();
+		auto lineHeight = m_settings.ReaderLineHeight();
 		auto scrollAmount = std::floor(viewportHeight / lineHeight) * lineHeight;
 
 		auto restAmount = this->ContentScrollView().ScrollableHeight() - this->ContentScrollView().VerticalOffset();
@@ -322,7 +303,6 @@ namespace winrt::Win2dTextReader::implementation
 		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
 		co_await context;
 		this->SettingsPopup().IsOpen(true);
-		m_settings.UpdateUI();
 	}
 }
 

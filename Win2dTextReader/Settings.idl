@@ -5,16 +5,14 @@ namespace Win2dTextReader
     {
         Settings();
         
-        Double ReaderLineHeight; 
-        Double ReaderFontSize;
-        Microsoft.UI.Xaml.Media.FontFamily ReaderFontFamily; 
-        Windows.UI.Color ReaderForeground; 
-        Microsoft.UI.Xaml.Media.Brush ReaderBackground; 
+        Double ReaderLineHeight{ get; };
+        Double ReaderFontSize{ get; };
+        Microsoft.UI.Xaml.Media.FontFamily ReaderFontFamily{ get; }; 
 
-        Double ActualLineHeight(); 
-        Boolean Load(); 
+        Windows.Foundation.Collections.IVector<Object> FontSizeValues{ get; }; 
+        Windows.Foundation.Collections.IVector<Object> LineHeightValues{ get; }; 
+        Windows.Foundation.Collections.IVector<Object> FontFamilyValues{ get; }; 
+
         void Save(); 
-
-        void UpdateUI(); 
     }
 }
