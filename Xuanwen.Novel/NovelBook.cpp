@@ -5,6 +5,7 @@
 #include <regex>
 #include <string>
 #include <string_view>
+#include <queue>
 
 const std::wregex TITLE_REGEX{ LR"(第[\s\d零一二三四五六七八九十百千万]+章)" };
 
@@ -35,7 +36,6 @@ namespace winrt::Xuanwen::Novel::implementation
             novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromPathAsync(m_filePath);
         }
 
-
         m_bookName = novelFile.DisplayName(); 
 
         // 2. 读取字节数组
@@ -45,14 +45,26 @@ namespace winrt::Xuanwen::Novel::implementation
         size_t dataLength = buffer.Length(); 
 
         // 3. 解码字节数组
-        std::wstring content = DecodeBytesArray(data, dataLength); 
+        winrt::hstring content = DecodeBytesArray(data, dataLength); 
         if (content.empty()) {
             co_return; 
         }
-        m_totalChars = static_cast<uint32_t>(content.length()); 
+        m_totalChars = static_cast<uint32_t>(content.size()); 
 
         // 4. 分章
-        this->GenerateChapters(content);
+        std::wstring_view contentView{ content }; 
+        if (contentView.empty())
+            co_return; 
+
+        size_t firstLineEnd = contentView.find_first_of(L'\n', 0); 
+        std::wstring_view firstLine = contentView.substr(0, firstLineEnd); 
+
+        if (IsTitle(firstLine)) {
+            this->GenerateChaptersB(contentView); 
+        }
+        else {
+            this->GenerateChaptersA(contentView);
+        }
     }
 
     hstring NovelBook::Name() const
@@ -93,7 +105,7 @@ namespace winrt::Xuanwen::Novel::implementation
         return charsetName;
     }
 
-    std::wstring NovelBook::DecodeBytesArray(const char* data, size_t dataLength)
+    winrt::hstring NovelBook::DecodeBytesArray(const char* data, size_t dataLength)
     {
         // 1. 判断数据是否为空
         if (data == nullptr || dataLength == 0) {
@@ -145,27 +157,32 @@ namespace winrt::Xuanwen::Novel::implementation
         return false;
     }
 
-    std::wstring NovelBook::DecodeFromUtf16(const char* data, size_t dataLength)
+    winrt::hstring NovelBook::DecodeFromUtf16(const char* data, size_t dataLength)
     {
+        uint32_t wcharsCount = static_cast<uint32_t>(dataLength / 2);
+
+        auto builder = winrt::impl::hstring_builder(wcharsCount); 
+        wchar_t* outputData = builder.data(); 
+
         if (IsUtf16LE(data, dataLength)) {
-            size_t wcharsCount = dataLength / 2;
-            return std::wstring(reinterpret_cast<const wchar_t*>(data), wcharsCount);
+            
+            const wchar_t* wData = reinterpret_cast<const wchar_t*>(data); 
+            std::copy(wData, wData + wcharsCount, outputData); 
         }
         else {
-            const uint16_t* pData = reinterpret_cast<const uint16_t*>(data);
-            size_t wcharsCount = dataLength / 2;
-            std::wstring result(wcharsCount, L'\0');
+            const uint16_t* uData = reinterpret_cast<const uint16_t*>(data);
 
             for (size_t i = 0; i < wcharsCount; i++)
             {
-                uint16_t val = pData[i];
-                result[i] = static_cast<wchar_t>((val >> 8) | (val << 8));
+                uint16_t val = uData[i];
+                outputData[i] = static_cast<wchar_t>((val >> 8) | (val << 8));
             }
-            return result;
         }
+
+        return builder.to_hstring(); 
     }
 
-    std::wstring NovelBook::DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName)
+    winrt::hstring NovelBook::DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName)
     {
         UINT codePage = 0;
         if (charsetName == "utf-8") {
@@ -185,14 +202,15 @@ namespace winrt::Xuanwen::Novel::implementation
             return {};
         }
 
-        std::wstring result(sizeNeeded, L'\0');
-        MultiByteToWideChar(
-            codePage, 0, data, static_cast<int>(dataLength), &result[0], sizeNeeded);
+        auto builder = winrt::impl::hstring_builder(static_cast<int>(sizeNeeded)); 
 
-        return result;
+        MultiByteToWideChar(
+            codePage, 0, data, static_cast<int>(dataLength), builder.data(), sizeNeeded);
+
+        return builder.to_hstring(); 
     }
 
-    void NovelBook::GenerateChapters(std::wstring_view content)
+    void NovelBook::GenerateChaptersA(std::wstring_view content)
     {
         size_t lineStart = 0;
         size_t lineEnd = 0; 
@@ -208,8 +226,8 @@ namespace winrt::Xuanwen::Novel::implementation
                 lineEnd = content.length();
 
             std::wstring_view line = content.substr(lineStart, lineEnd - lineStart);
-            if (IsTitle(line)) {
 
+            if (IsTitle(line)) {
                 chapterEnd = lineStart; 
                 std::wstring_view chapterText = content.substr(chapterStart, chapterEnd - chapterStart); 
                 winrt::Xuanwen::Novel::Chapter chapter{ chapterIndex, winrt::hstring{chapterText} };
@@ -224,5 +242,50 @@ namespace winrt::Xuanwen::Novel::implementation
         std::wstring_view lastChapterText = content.substr(chapterStart);
         winrt::Xuanwen::Novel::Chapter lastChapter{ chapterIndex, winrt::hstring {lastChapterText} }; 
         m_chapters.Append(lastChapter); 
+    }
+
+    void NovelBook::GenerateChaptersB(std::wstring_view content)
+    {
+        size_t lineStart = 0;
+        size_t lineEnd = 0;
+        size_t chapterEnd = 0;
+        uint32_t chapterIndex = 0;
+
+        std::queue<size_t> chapterStartQueue; 
+
+        while (lineStart < content.length())
+        {
+            lineEnd = content.find_first_of(L'\n', lineStart);
+            if (lineEnd == std::wstring::npos)
+                lineEnd = content.length();
+
+            std::wstring_view line = content.substr(lineStart, lineEnd - lineStart);
+
+            if (IsTitle(line)) {
+                chapterStartQueue.push(lineStart); 
+
+                if (chapterStartQueue.size() < 2)
+                    goto NEXT;
+
+                chapterEnd = lineStart;
+                size_t chapterStart = chapterStartQueue.front(); 
+                chapterStartQueue.pop(); 
+
+                std::wstring_view chapterText = content.substr(chapterStart, chapterEnd - chapterStart);
+                winrt::Xuanwen::Novel::Chapter chapter{ chapterIndex, winrt::hstring{chapterText} };
+                m_chapters.Append(chapter);
+
+                ++chapterIndex;
+            }
+            NEXT:
+            lineStart = lineEnd + 1;
+        }
+
+        if (chapterStartQueue.empty())
+            return; 
+
+        std::wstring_view lastChapterText = content.substr(chapterStartQueue.front());
+        winrt::Xuanwen::Novel::Chapter lastChapter{ chapterIndex, winrt::hstring { lastChapterText} };
+        m_chapters.Append(lastChapter);
     }
 }

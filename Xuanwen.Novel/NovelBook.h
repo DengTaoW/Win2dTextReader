@@ -17,14 +17,15 @@ namespace winrt::Xuanwen::Novel::implementation
 
     private:
         static std::string DetectCharsetName(const char* data, size_t sampleSize); 
-        static std::wstring DecodeBytesArray(const char* data, size_t dataLength); 
+        static winrt::hstring DecodeBytesArray(const char* data, size_t dataLength); 
         static bool IsTitle(std::wstring_view line); 
 
         static bool IsUtf16LE(const char* data, size_t sampleSize); 
-        static std::wstring DecodeFromUtf16(const char* data, size_t dataLength); 
-        static std::wstring DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName); 
+        static winrt::hstring DecodeFromUtf16(const char* data, size_t dataLength); 
+        static winrt::hstring DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName); 
 
-        void GenerateChapters(std::wstring_view content); 
+        void GenerateChaptersA(std::wstring_view content); 
+        void GenerateChaptersB(std::wstring_view content);
 
         hstring m_filePath; 
         hstring m_bookName; 
