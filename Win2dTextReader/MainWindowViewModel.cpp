@@ -16,29 +16,64 @@ namespace winrt::Win2dTextReader::implementation
 
 	void MainWindowViewModel::LoadData()
 	{
-		std::vector<int> numbers{ 1, 2, 3, 4, 5 }; 
-		auto numbersObject = winrt::Windows::Foundation::PropertyValue::CreateInt32Array(numbers); 
-		
-		// TODO
-		/*
-		保存的数据：
-		CurrentBook.FilePath
-		ChapterIndex
-		WindowPositionX
-		WindowPositionY
-		WindowSizeX
-		WindowSizeY
-		ReaderVerticalOffset
+		// 1. Int32Values
+		const hstring INT32_VALUES{ L"Int32Values" }; 
+		if (m_localSettings.HasKey(INT32_VALUES)) {
+			auto int32ValuesObject = 
+				m_localSettings.Lookup(INT32_VALUES).as<winrt::Windows::Foundation::IReferenceArray<int32_t>>();
+			winrt::com_array<int32_t> int32Values; 
+			int32ValuesObject.GetInt32Array(int32Values); 
 
-		LineHeightIndex
-		FontSizeIndex
-		FontNameIndex
-		*/
-		throw hresult_not_implemented();
+			m_windowPositionX = int32Values[0]; 
+			m_windowPositionY = int32Values[1]; 
+			m_windowSizeW = int32Values[2]; 
+			m_windowSizeH = int32Values[3];
+		}
+
+		// 2. UInt32Values 
+		const hstring UINT32_VALUES{ L"UInt32Values" };
+		if (m_localSettings.HasKey(UINT32_VALUES)) {
+
+		}
 	}
 	void MainWindowViewModel::SaveData()
 	{
-		throw hresult_not_implemented();
+		std::vector<int32_t> int32Values = {
+			m_windowPositionX,
+			m_windowPositionY,
+			m_windowSizeW, 
+			m_windowSizeH
+		};
+
+		auto int32ValuesObject = winrt::Windows::Foundation::PropertyValue::CreateInt32Array(int32Values); 
+		m_localSettings.Insert(L"Int32Values", int32ValuesObject); 
+
+
+		std::vector<uint32_t> uint32Values = {
+			m_chapterIndex, 
+			m_lineHeightIndex, 
+			m_fontSizeIndex, 
+			m_fontFamilyIndex
+		}; 
+		
+		auto uint32ValuesObject = winrt::Windows::Foundation::PropertyValue::CreateUInt32Array(uint32Values); 
+		m_localSettings.Insert(L"UInt32Values", uint32ValuesObject); 
+
+
+		std::vector<hstring> stringValues = {
+			m_currentBook.FilePath()
+		}; 
+
+		auto stringValuesObject = winrt::Windows::Foundation::PropertyValue::CreateStringArray(stringValues);
+		m_localSettings.Insert(L"StringValues", stringValuesObject); 
+
+		
+		std::vector<double> doubleValues = {
+			m_readerVerticalOffset
+		}; 
+
+		auto doubleValuesObject = winrt::Windows::Foundation::PropertyValue::CreateDoubleArray(doubleValues); 
+		m_localSettings.Insert(L"DoubleValues", doubleValuesObject);
 	}
 
 	uint32_t MainWindowViewModel::ChapterIndex() const
