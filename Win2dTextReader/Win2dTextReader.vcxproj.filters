@@ -11,6 +11,15 @@
     <Midl Include="ReadingHistory.idl">
       <Filter>Components</Filter>
     </Midl>
+    <Midl Include="MainWindowViewModel.idl">
+      <Filter>ViewModels</Filter>
+    </Midl>
+    <Midl Include="FontItem.idl">
+      <Filter>Components</Filter>
+    </Midl>
+    <Midl Include="DoubleItem.idl">
+      <Filter>Components</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -20,6 +29,15 @@
       <Filter>Packages</Filter>
     </ClCompile>
     <ClCompile Include="ReadingHistory.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindowViewModel.cpp">
+      <Filter>ViewModels</Filter>
+    </ClCompile>
+    <ClCompile Include="FontItem.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="DoubleItem.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -191,6 +209,9 @@
     <Filter Include="Components">
       <UniqueIdentifier>{b18b53b7-07cc-491e-8802-7e20dfadfcf2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ViewModels">
+      <UniqueIdentifier>{277ac00d-7053-44c7-96ba-d9ec7e93a288}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
@@ -210,6 +231,15 @@
       <Filter>Packages</Filter>
     </ClInclude>
     <ClInclude Include="ReadingHistory.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindowViewModel.h">
+      <Filter>ViewModels</Filter>
+    </ClInclude>
+    <ClInclude Include="FontItem.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="DoubleItem.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>

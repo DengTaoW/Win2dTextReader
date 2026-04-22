@@ -19,6 +19,7 @@ namespace winrt::Win2dTextReader::implementation
 		MainWindow();
 		void InitializeComponent();
 		winrt::Win2dTextReader::Settings ReaderSettings(); 
+		winrt::Windows::Foundation::Numerics::float4 GetPopupRegion(float wScale, float hScale); 
 
 		winrt::fire_and_forget RestoreRedingHistoryAsync(); 
 		void OnWindowPropertyChanged(winrt::Microsoft::UI::Windowing::AppWindow const& appwindow, winrt::Microsoft::UI::Windowing::AppWindowChangedEventArgs const args);
@@ -34,7 +35,7 @@ namespace winrt::Win2dTextReader::implementation
 		void ContentScrollView_ViewChanged(winrt::Microsoft::UI::Xaml::Controls::ScrollView const& sender, winrt::Windows::Foundation::IInspectable const& args);
 		void OnReaderRegionScrollUp(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
 		void OnReaderRegionScrollDown(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
-		winrt::fire_and_forget ShowSettings(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
+		void ShowSettings(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
 	};
 }
 

@@ -1,0 +1,83 @@
+#pragma once
+#include "MainWindowViewModel.g.h"
+
+
+namespace winrt::Win2dTextReader::implementation
+{
+    struct MainWindowViewModel : MainWindowViewModelT<MainWindowViewModel>
+    {
+        MainWindowViewModel();
+
+        void LoadData();
+        void SaveData();
+
+        uint32_t ChapterIndex() const;
+        void ChapterIndex(uint32_t value);
+
+        int32_t WindowPositionX() const;
+        void WindowPositionX(int32_t value);
+
+        int32_t WindowPositionY() const;
+        void WindowPositionY(int32_t value);
+
+        int32_t WindowSizeW() const;
+        void WindowSizeW(int32_t value);
+
+        int32_t WindowSizeH() const;
+        void WindowSizeH(int32_t value);
+
+        double ReaderVerticalOffset() const;
+        void ReaderVerticalOffset(double value);
+
+        winrt::Xuanwen::Novel::NovelBook CurrentBook();
+        void CurrentBook(winrt::Xuanwen::Novel::NovelBook const& value);
+
+        winrt::Xuanwen::Novel::Chapter CurrentChapter();
+
+        double FontSize() const;
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::DoubleItem> FontSizeItems(); 
+        uint32_t FontSizeIndex() const; 
+        void FontSizeIndex(uint32_t value); 
+
+        double LineHeight() const;
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::DoubleItem> LineHeightItems(); 
+        uint32_t LineHeightIndex() const;
+        void LineHeightIndex(uint32_t value); 
+
+        winrt::Microsoft::UI::Xaml::Media::FontFamily FontFamily();
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::FontItem> FontItems(); 
+        uint32_t FontFamilyIndex() const; 
+        void FontFamilyIndex(uint32_t value); 
+
+        winrt::event_token PropertyChanged(winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
+        void PropertyChanged(winrt::event_token const& token) noexcept;
+
+    private: 
+        void NotifyPropertyChanged(std::wstring_view name); 
+        void InitializeCollections(); 
+
+        uint32_t m_chapterIndex{ 0 }; 
+        int32_t m_windowPositionX{ 0 }; 
+        int32_t m_windowPositionY{ 0 }; 
+        int32_t m_windowSizeW{ 0 }; 
+        int32_t m_windowSizeH{ 0 }; 
+        double m_readerVerticalOffset{ 0 }; 
+
+        uint32_t m_fontSizeIndex{ 0 }; 
+        uint32_t m_lineHeightIndex{ 0 };
+        uint32_t m_fontFamilyIndex{ 0 }; 
+
+        winrt::Xuanwen::Novel::NovelBook m_currentBook{ nullptr }; 
+        winrt::event<winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> m_propertyChanged; 
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::FontItem> m_fontItems{ nullptr }; 
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::DoubleItem> m_fontSizeItems{ nullptr }; 
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::DoubleItem> m_lineHeightItems{ nullptr }; 
+        winrt::Windows::Foundation::Collections::IPropertySet m_localSettings{ nullptr }; 
+    };
+}
+namespace winrt::Win2dTextReader::factory_implementation
+{
+    struct MainWindowViewModel : MainWindowViewModelT<MainWindowViewModel, implementation::MainWindowViewModel>
+    {
+    };
+}

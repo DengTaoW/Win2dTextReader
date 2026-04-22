@@ -1,0 +1,11 @@
+namespace Win2dTextReader
+{
+	[default_interface]
+	runtimeclass FontItem
+	{
+		FontItem(String fontFamily, String displayFontName);
+		
+		Microsoft.UI.Xaml.Media.FontFamily FontFamily{ get; };
+		String DisplayFontName{ get; }; 
+	}
+}

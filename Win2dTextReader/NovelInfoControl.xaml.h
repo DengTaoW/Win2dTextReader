@@ -8,6 +8,9 @@ namespace winrt::Win2dTextReader::implementation
     {
         NovelInfoControl() = default;
         void SetNovelBook(winrt::Xuanwen::Novel::NovelBook const& book);
+
+    private:
+        static winrt::hstring ConvertReadableText(uint32_t count); 
     };
 }
 

@@ -60,10 +60,20 @@ namespace winrt::Xuanwen::Novel::implementation
         std::wstring_view firstLine = contentView.substr(0, firstLineEnd); 
 
         if (IsTitle(firstLine)) {
-            this->GenerateChaptersB(contentView); 
+            this->GenerateChaptersTypeA(contentView); 
         }
         else {
-            this->GenerateChaptersA(contentView);
+            this->GenerateChaptersTypeB(contentView);
+        }
+
+        // 5. 判断第一章是否为空，如果是就移除
+        if (m_chapters.Size() > 0) {
+            winrt::Xuanwen::Novel::Chapter firstChapter = m_chapters.GetAt(0); 
+            std::wstring_view textView{ firstChapter.Text() }; 
+
+            if (NovelBook::IsEmpty(textView)) {
+                m_chapters.RemoveAt(0); 
+            }
         }
     }
 
@@ -138,6 +148,22 @@ namespace winrt::Xuanwen::Novel::implementation
         }
     }
 
+    bool NovelBook::IsEmpty(std::wstring_view text)
+    {
+        if (text.empty()) {
+            return true; 
+        }
+
+        auto isWhiteChar = [](wchar_t c) { return c == L'\r' || c == L'\n' || c == L' '; };
+        for (wchar_t c : text) {
+            if (isWhiteChar(c) == false) {
+                return false; 
+            }
+        }
+
+        return true; 
+    }
+
     bool NovelBook::IsUtf16LE(const char* data, size_t sampleSize)
     {
         int flags = IS_TEXT_UNICODE_SIGNATURE |
@@ -210,7 +236,7 @@ namespace winrt::Xuanwen::Novel::implementation
         return builder.to_hstring(); 
     }
 
-    void NovelBook::GenerateChaptersA(std::wstring_view content)
+    void NovelBook::GenerateChaptersTypeB(std::wstring_view content)
     {
         size_t lineStart = 0;
         size_t lineEnd = 0; 
@@ -244,7 +270,7 @@ namespace winrt::Xuanwen::Novel::implementation
         m_chapters.Append(lastChapter); 
     }
 
-    void NovelBook::GenerateChaptersB(std::wstring_view content)
+    void NovelBook::GenerateChaptersTypeA(std::wstring_view content)
     {
         size_t lineStart = 0;
         size_t lineEnd = 0;

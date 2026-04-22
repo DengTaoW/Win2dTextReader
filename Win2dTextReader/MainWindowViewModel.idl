@@ -1,0 +1,36 @@
+import "FontItem.idl"; 
+import "DoubleItem.idl"; 
+
+namespace Win2dTextReader
+{
+	[default_interface]
+	runtimeclass MainWindowViewModel : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+	{
+		MainWindowViewModel(); 
+		
+		void LoadData(); 
+		void SaveData();
+
+		UInt32 ChapterIndex; 
+		Int32 WindowPositionX; 
+		Int32 WindowPositionY; 
+		Int32 WindowSizeW; 
+		Int32 WindowSizeH; 
+		Double ReaderVerticalOffset; 
+
+		Xuanwen.Novel.NovelBook CurrentBook; 
+		Xuanwen.Novel.Chapter CurrentChapter{ get; }; 
+
+		Double LineHeight{ get; }; 
+		Double FontSize{ get; }; 
+		Microsoft.UI.Xaml.Media.FontFamily FontFamily{ get; }; 
+
+		Windows.Foundation.Collections.IVector<FontItem> FontItems { get; }; 
+		Windows.Foundation.Collections.IVector<DoubleItem> FontSizeItems{ get; }; 
+		Windows.Foundation.Collections.IVector<DoubleItem> LineHeightItems{ get; };
+
+		UInt32 LineHeightIndex; 
+		UInt32 FontSizeIndex; 
+		UInt32 FontFamilyIndex; 
+	}
+}

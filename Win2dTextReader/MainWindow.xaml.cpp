@@ -4,7 +4,6 @@
 #include "MainWindow.g.cpp"
 #endif
 
-constexpr float POPUP_BOTTOM_PADDING = 20.0F; 
 
 namespace winrt::Win2dTextReader::implementation
 {
@@ -43,6 +42,26 @@ namespace winrt::Win2dTextReader::implementation
 	winrt::Win2dTextReader::Settings MainWindow::ReaderSettings()
 	{
 		return m_settings; 
+	}
+
+	winrt::Windows::Foundation::Numerics::float4 MainWindow::GetPopupRegion(float wScale, float hScale)
+	{
+		winrt::Windows::Foundation::Numerics::float2 readerSize = this->ReaderRegion().ActualSize(); 
+		float width = readerSize.x * wScale; 
+		float height = readerSize.y * hScale; 
+
+		if (width < 300.0f) {
+			width = readerSize.x - 40.0f; 
+		}
+		
+		if (width > 800.0f) {
+			width = 800.0f; 
+		}
+
+		float left = (readerSize.x - width) / 2.0f; 
+		float top = readerSize.y - height - 20.0f;;
+
+		return { left, top, width, height };
 	}
 
 	winrt::fire_and_forget MainWindow::RestoreRedingHistoryAsync()
@@ -86,10 +105,10 @@ namespace winrt::Win2dTextReader::implementation
 
 		if (args.DidSizeChange()) {
 			auto newSize = appwindow.Size(); 
-			if(newSize.Width > 50)
+			if(newSize.Width > 300)
 				m_readingHistory.WindowSizeW(newSize.Width); 
 
-			if (newSize.Height > 50)
+			if (newSize.Height > 300)
 				m_readingHistory.WindowSizeH(newSize.Height);
 		}
 	}
@@ -191,18 +210,14 @@ namespace winrt::Win2dTextReader::implementation
 			co_return; 
 
 		winrt::apartment_context context; 
-		
-		winrt::Windows::Foundation::Numerics::float2 containerSize = this->ReaderRegion().ActualSize();
-		float width = containerSize.x * 0.5f; 
-		float height = containerSize.y * 0.9f; 
-		float left = (containerSize.x - width) / 2.0f; 
-		float top = containerSize.y - height - POPUP_BOTTOM_PADDING; 
 
-		m_bookContents.Width(width); 
-		m_bookContents.Height(height); 
+		auto region = this->GetPopupRegion(0.5f, 0.9f); 
 
-		this->ContentsPopup().HorizontalOffset(left); 
-		this->ContentsPopup().VerticalOffset(top); 
+		m_bookContents.Height(region.w); 
+		m_bookContents.Width(region.z); 
+
+		this->ContentsPopup().HorizontalOffset(region.x); 
+		this->ContentsPopup().VerticalOffset(region.y); 
 		this->ContentsPopup().IsOpen(true); 
 
 		co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
@@ -214,21 +229,15 @@ namespace winrt::Win2dTextReader::implementation
 	void MainWindow::ShowNovelInfo(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
+		auto region = this->GetPopupRegion(0.5f, 0.5f);
 
-		// 计算大小和位置
-		winrt::Windows::Foundation::Numerics::float2 containerSize = this->ReaderRegion().ActualSize();
-		float width = containerSize.x * 0.5f;
-		float height = containerSize.y * 0.5f;
-		float left = (containerSize.x - width) / 2.0f;
-		float top = containerSize.y - height - POPUP_BOTTOM_PADDING;
+		m_novelInfoControl.Height(region.w);
+		m_novelInfoControl.Width(region.z);
 
-		m_novelInfoControl.Width(width);
-		m_novelInfoControl.Height(height);
+		this->NovelFileInfoPopup().HorizontalOffset(region.x);
+		this->NovelFileInfoPopup().VerticalOffset(region.y);
+
 		m_novelInfoControl.SetNovelBook(m_novelBook);
-
-		this->NovelFileInfoPopup().HorizontalOffset(left);
-		this->NovelFileInfoPopup().VerticalOffset(top);
-
 		this->NovelFileInfoPopup().IsOpen(true);
 	}
 
@@ -281,27 +290,19 @@ namespace winrt::Win2dTextReader::implementation
 		this->ContentScrollView().ScrollBy(0.0, scrollAmount);
 	}
 
-	// 设置 Popup
-	winrt::fire_and_forget MainWindow::ShowSettings(
+	// 显示设置
+	void MainWindow::ShowSettings(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		winrt::apartment_context context;
 
-		// 计算大小和位置
-		winrt::Windows::Foundation::Numerics::float2 containerSize = this->ReaderRegion().ActualSize();
-		float width = containerSize.x * 0.6f;
-		float height = containerSize.y * 0.6f;
-		float left = (containerSize.x - width) / 2.0f;
-		float top = containerSize.y - height - POPUP_BOTTOM_PADDING;
+		auto region = this->GetPopupRegion(0.6f, 0.6f); 
 
-		m_settings.Width(width);
-		m_settings.Height(height);
+		m_settings.Height(region.w);
+		m_settings.Width(region.z);
 
-		this->SettingsPopup().HorizontalOffset(left);
-		this->SettingsPopup().VerticalOffset(top);
-
-		co_await winrt::resume_after(std::chrono::milliseconds{ 100 });
-		co_await context;
+		this->SettingsPopup().HorizontalOffset(region.x);
+		this->SettingsPopup().VerticalOffset(region.y);
 		this->SettingsPopup().IsOpen(true);
 	}
 }

@@ -125,6 +125,9 @@
       <DependentUpon>BookContents.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
+    <ClInclude Include="DoubleItem.h" />
+    <ClInclude Include="FontItem.h" />
+    <ClInclude Include="MainWindowViewModel.h" />
     <ClInclude Include="NovelInfoControl.xaml.h">
       <DependentUpon>NovelInfoControl.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -160,6 +163,9 @@
       <DependentUpon>BookContents.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="DoubleItem.cpp" />
+    <ClCompile Include="FontItem.cpp" />
+    <ClCompile Include="MainWindowViewModel.cpp" />
     <ClCompile Include="NovelInfoControl.xaml.cpp">
       <DependentUpon>NovelInfoControl.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -186,6 +192,9 @@
       <SubType>Code</SubType>
     </Midl>
     <Midl Include="Delegates.idl" />
+    <Midl Include="DoubleItem.idl" />
+    <Midl Include="FontItem.idl" />
+    <Midl Include="MainWindowViewModel.idl" />
     <Midl Include="ReadingHistory.idl" />
     <Midl Include="MainWindow.idl">
       <SubType>Code</SubType>

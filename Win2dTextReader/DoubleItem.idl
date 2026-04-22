@@ -1,0 +1,10 @@
+namespace Win2dTextReader
+{
+	[default_interface]
+	runtimeclass DoubleItem
+	{
+		DoubleItem(Double x, Int32 digits);
+		String DisplayText{get;};
+		Double Value{ get; }; 
+	}
+}

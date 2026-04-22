@@ -19,13 +19,14 @@ namespace winrt::Xuanwen::Novel::implementation
         static std::string DetectCharsetName(const char* data, size_t sampleSize); 
         static winrt::hstring DecodeBytesArray(const char* data, size_t dataLength); 
         static bool IsTitle(std::wstring_view line); 
+        static bool IsEmpty(std::wstring_view text); 
 
         static bool IsUtf16LE(const char* data, size_t sampleSize); 
         static winrt::hstring DecodeFromUtf16(const char* data, size_t dataLength); 
         static winrt::hstring DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName); 
 
-        void GenerateChaptersA(std::wstring_view content); 
-        void GenerateChaptersB(std::wstring_view content);
+        void GenerateChaptersTypeB(std::wstring_view content); 
+        void GenerateChaptersTypeA(std::wstring_view content);
 
         hstring m_filePath; 
         hstring m_bookName; 
