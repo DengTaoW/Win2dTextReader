@@ -1,4 +1,5 @@
-import "Settings.idl"; 
+import "Delegates.idl"; 
+import "MainWindowViewModel.idl";
 
 namespace Win2dTextReader
 {
@@ -6,6 +7,8 @@ namespace Win2dTextReader
     runtimeclass MainWindow : Microsoft.UI.Xaml.Window
     {
         MainWindow();
-        Settings ReaderSettings{ get; };
+        MainWindowViewModel ViewModel{ get; }; 
+
+        event ObjectAction ChaptersChanged; 
     }
 }

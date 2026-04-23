@@ -1,4 +1,4 @@
-import "ChaptersCollection.idl"; 
+import "Chapter.idl"; 
 
 
 namespace Xuanwen.Novel
@@ -13,6 +13,6 @@ namespace Xuanwen.Novel
 		String Name{ get; };
 		String FilePath{ get; }; 
 		UInt32 TotalChars{ get; };
-		ChaptersCollection Chapters{ get; };
+		Windows.Foundation.Collections.IVector<Chapter> Chapters{ get; };
 	}
 }

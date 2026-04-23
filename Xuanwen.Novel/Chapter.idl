@@ -3,9 +3,7 @@ namespace Xuanwen.Novel
 	[default_interface]
 	runtimeclass Chapter
 	{
-		Chapter();
-		Chapter(UInt32 index, String text);
-		UInt32 Index { get; }; 
+		Chapter(String text);
 		String Title { get; }; 
 		String Text{ get; };
 	}

@@ -1,9 +1,0 @@
-namespace Win2dTextReader
-{
-    [default_interface]
-    runtimeclass NovelInfoControl : Microsoft.UI.Xaml.Controls.UserControl
-    {
-        NovelInfoControl();
-        void SetNovelBook(Xuanwen.Novel.NovelBook book); 
-    }
-}

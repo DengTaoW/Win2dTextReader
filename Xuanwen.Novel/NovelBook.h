@@ -13,7 +13,7 @@ namespace winrt::Xuanwen::Novel::implementation
         hstring Name() const;
         hstring FilePath() const; 
         uint32_t TotalChars() const; 
-        winrt::Xuanwen::Novel::ChaptersCollection Chapters();
+        winrt::Windows::Foundation::Collections::IVector<winrt::Xuanwen::Novel::Chapter> Chapters();
 
     private:
         static std::string DetectCharsetName(const char* data, size_t sampleSize); 
@@ -31,7 +31,7 @@ namespace winrt::Xuanwen::Novel::implementation
         hstring m_filePath; 
         hstring m_bookName; 
         uint32_t m_totalChars; 
-        winrt::Xuanwen::Novel::ChaptersCollection m_chapters{ nullptr }; 
+        winrt::Windows::Foundation::Collections::IVector<winrt::Xuanwen::Novel::Chapter> m_chapters{ nullptr };
     };
 }
 namespace winrt::Xuanwen::Novel::factory_implementation

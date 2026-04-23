@@ -7,42 +7,59 @@
 
 namespace winrt::Win2dTextReader::implementation
 {
-	constexpr uint32_t INVALID_CHAPTER_INDEX{ UINT32_MAX }; 
-
 	MainWindow::MainWindow()
 	{
-		m_readingHistory = winrt::Win2dTextReader::ReadingHistory(); 
-		m_isReadingHistoryValid = m_readingHistory.Load(); 
-		if (!m_isReadingHistoryValid) {
-			m_readingHistory.ChapterIndex(INVALID_CHAPTER_INDEX); 
-		}
+		m_viewModel = winrt::Win2dTextReader::MainWindowViewModel(); 
+		this->ChaptersChanged({&m_viewModel , &MainWindowViewModel::OnChaptersChanged });
+		m_viewModel.PropertyChanged({ this, &MainWindow::OnViewModelPropertyChanged }); 
 	}
 
 	void MainWindow::InitializeComponent()
 	{
 		MainWindowT::InitializeComponent(); 
 
-		m_bookContents = winrt::Win2dTextReader::BookContents(); 
-		m_bookContents.SelectedChapterChanged({this, &MainWindow::SetCurrentChapter});
-
-		m_novelInfoControl = winrt::Win2dTextReader::NovelInfoControl(); 
-		m_settings = winrt::Win2dTextReader::Settings(); 
-		
-		// Window
+		auto presenter = winrt::Microsoft::UI::Windowing::OverlappedPresenter::Create();
+		presenter.SetBorderAndTitleBar(true, true);
+		presenter.IsMinimizable(false);
+		presenter.IsMaximizable(false);
+		this->AppWindow().SetPresenter(presenter); 
+		this->AppWindow().Changed({ this, &MainWindow::OnWindowPropertyChanged });
 		this->ExtendsContentIntoTitleBar(true);
-		this->AppWindow().Changed({this, &MainWindow::OnWindowPropertyChanged});
-		this->RestoreRedingHistoryAsync(); 
 
-		// Popup
-		this->ContentsPopup().Child(m_bookContents);
-		this->NovelFileInfoPopup().Child(m_novelInfoControl); 
-		this->SettingsPopup().Child(m_settings);
+
+		m_bookContentsControl = winrt::Win2dTextReader::BookContents(m_viewModel); 
+		m_settingsControl = winrt::Win2dTextReader::Settings(m_viewModel);
+
+		this->ContentsPopup().Child(m_bookContentsControl);
+		this->SettingsPopup().Child(m_settingsControl);
+
+		this->LoadHistoryAsync(); 
 	}
 
-	winrt::Win2dTextReader::Settings MainWindow::ReaderSettings()
+	winrt::fire_and_forget MainWindow::LoadHistoryAsync()
 	{
-		return m_settings; 
+		winrt::Windows::Graphics::RectInt32 windowRect{
+			m_viewModel.WindowPositionX(),
+			m_viewModel.WindowPositionY(),
+			m_viewModel.WindowSizeW(),
+			m_viewModel.WindowSizeH()
+		};
+		this->AppWindow().MoveAndResize(windowRect); 
+
+		if (m_viewModel.CurrentBook() != nullptr) {
+			co_await m_viewModel.CurrentBook().InitializeAsync();
+			m_chaptersChanged(winrt::box_value(false));
+
+			winrt::resume_after(std::chrono::milliseconds{ 50 }); 
+			this->ContentScrollView().ScrollBy(0, m_viewModel.ReaderVerticalOffset()); 
+		}
 	}
+
+	winrt::Win2dTextReader::MainWindowViewModel MainWindow::ViewModel()
+	{
+		return m_viewModel; 
+	}
+
 
 	winrt::Windows::Foundation::Numerics::float4 MainWindow::GetPopupRegion(float wScale, float hScale)
 	{
@@ -64,102 +81,26 @@ namespace winrt::Win2dTextReader::implementation
 		return { left, top, width, height };
 	}
 
-	winrt::fire_and_forget MainWindow::RestoreRedingHistoryAsync()
-	{
-		winrt::Microsoft::UI::Windowing::OverlappedPresenter presenter =
-			winrt::Microsoft::UI::Windowing::OverlappedPresenter::Create();
-		
-		presenter.SetBorderAndTitleBar(true, true); 
-		presenter.IsMinimizable(false); 
-		presenter.IsMaximizable(false); 
-		presenter.IsResizable(true); 
-
-		this->AppWindow().SetPresenter(presenter);
-
-		if (!m_isReadingHistoryValid) {
-			winrt::Xuanwen::Novel::NovelBook book = m_readingHistory.LoadUaseges(); 
-			co_await this->ReadBookAsync(book, true); 
-		}
-		else {
-			winrt::Windows::Graphics::RectInt32 rect{
-				m_readingHistory.WindowPositionX(),
-				m_readingHistory.WindowPositionY(),
-				m_readingHistory.WindowSizeW(),
-				m_readingHistory.WindowSizeH()
-			};
-			this->AppWindow().MoveAndResize(rect); 
-			winrt::Xuanwen::Novel::NovelBook book{ m_readingHistory.FilePath() }; 
-			co_await this->ReadBookAsync(book, false);
-		}
-	}
-
 	void MainWindow::OnWindowPropertyChanged(
 		winrt::Microsoft::UI::Windowing::AppWindow const& appwindow, 
 		winrt::Microsoft::UI::Windowing::AppWindowChangedEventArgs const args)
 	{
 		if (args.DidPositionChange()) {
-			auto newPosition = appwindow.Position();
-			m_readingHistory.WindowPositionX(newPosition.X); 
-			m_readingHistory.WindowPositionY(newPosition.Y); 
+			auto newPostion = appwindow.Position(); 
+			m_viewModel.WindowPositionX(newPostion.X); 
+			m_viewModel.WindowPositionY(newPostion.Y); 
 		}
 
 		if (args.DidSizeChange()) {
 			auto newSize = appwindow.Size(); 
-			if(newSize.Width > 300)
-				m_readingHistory.WindowSizeW(newSize.Width); 
-
-			if (newSize.Height > 300)
-				m_readingHistory.WindowSizeH(newSize.Height);
+			m_viewModel.WindowSizeW(newSize.Width); 
+			m_viewModel.WindowSizeH(newSize.Height); 
 		}
-	}
-
-	winrt::Windows::Foundation::IAsyncAction MainWindow::ReadBookAsync(winrt::Xuanwen::Novel::NovelBook const& book, bool isNewBook)
-	{
-		if (m_novelBook != nullptr) {
-			m_novelBook.Chapters().Clear();
-		}
-
-		m_novelBook = book;
-		co_await m_novelBook.InitializeAsync();
-
-		m_readingHistory.FilePath(m_novelBook.FilePath()); 
-		this->BookNameTextBlock().Text(m_novelBook.Name());
-
-		if (m_novelBook.Chapters().Size() > 0) {
-			uint32_t chapterIndex = 0u; 
-			if (!isNewBook && m_isReadingHistoryValid) {
-				chapterIndex = m_readingHistory.ChapterIndex(); 
-			}
-
-			m_bookContents.SetChapters(m_novelBook.Chapters()); 
-			this->SetCurrentChapter(m_novelBook.Chapters().GetAt(chapterIndex));
-		}
-	}
-
-	winrt::fire_and_forget MainWindow::SetCurrentChapter(winrt::Xuanwen::Novel::Chapter const& chapter)
-	{
-		winrt::apartment_context context; 
-
-		m_readingHistory.ChapterIndex(chapter.Index());
-		this->ChapterTitleTextBlock().Text(chapter.Title());
-		this->ChapterContentTextBlock().Text(chapter.Text());
-		this->ContentsPopup().IsOpen(false); 
-
-		co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
-		co_await context; 
-
-		double verticalOffset = -1.0 * this->ContentScrollView().VerticalOffset();
-
-		if (m_chaptersCounter == 0 && m_isReadingHistoryValid) {
-			verticalOffset = m_readingHistory.VerticalOffset(); 
-		}
-		++m_chaptersCounter; 
-
-		this->ContentScrollView().ScrollBy(0.0, verticalOffset);
 	}
 
 	winrt::fire_and_forget MainWindow::OnOpenButtonClicked(
-		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+		winrt::Windows::Foundation::IInspectable const&, 
+		winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		winrt::Microsoft::Windows::Storage::Pickers::FileOpenPicker picker{ this->AppWindow().Id() }; 
 		picker.FileTypeFilter().Append(L".txt"); 
@@ -170,99 +111,76 @@ namespace winrt::Win2dTextReader::implementation
 
 		if (result == nullptr)
 			co_return; 
-		winrt::Xuanwen::Novel::NovelBook book{ result.Path() }; 
-		co_await this->ReadBookAsync(book, true);
+		
+		m_viewModel.CurrentBook(winrt::Xuanwen::Novel::NovelBook{ result.Path() }); 
+		co_await m_viewModel.CurrentBook().InitializeAsync();
+
+		m_chaptersChanged(winrt::box_value(true)); 
 	}
 
 
 	void MainWindow::OnPreviousChapterButtonClicked(
-		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+		winrt::Windows::Foundation::IInspectable const&, 
+		winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		if (m_novelBook == nullptr)
-			return;
-
-		if (m_readingHistory.ChapterIndex() == 0)
-			return; 
-
-		winrt::Xuanwen::Novel::Chapter chapter = m_novelBook.Chapters().GetAt(m_readingHistory.ChapterIndex() - 1);
-		this->SetCurrentChapter(chapter); 
+		if (m_viewModel.ChapterIndex() > 0) {
+			auto index = m_viewModel.ChapterIndex() - 1; 
+			m_viewModel.ChapterIndex(index); 
+		}
 	}
 
 	void MainWindow::OnNextChapterButtonClicked(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		if (m_novelBook == nullptr)
-			return;
-
-		auto newChapterIndex = m_readingHistory.ChapterIndex() + 1; 
-		if (newChapterIndex >= m_novelBook.Chapters().Size())
-			return;
-
-		winrt::Xuanwen::Novel::Chapter chapter = m_novelBook.Chapters().GetAt(newChapterIndex);
-		this->SetCurrentChapter(chapter); 
+		auto index = m_viewModel.ChapterIndex() + 1; 
+		m_viewModel.ChapterIndex(index); 
 	}
 
-	// 显示目录列表
-	winrt::fire_and_forget MainWindow::ShowContents(
+	void MainWindow::ShowContents(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		if (m_novelBook == nullptr || m_novelBook.Chapters().Size() == 0)
-			co_return; 
+		auto region = this->GetPopupRegion(0.6f, 0.8f);
 
-		winrt::apartment_context context; 
-
-		auto region = this->GetPopupRegion(0.5f, 0.9f); 
-
-		m_bookContents.Height(region.w); 
-		m_bookContents.Width(region.z); 
+		m_bookContentsControl.Height(region.w); 
+		m_bookContentsControl.Width(region.z);
 
 		this->ContentsPopup().HorizontalOffset(region.x); 
 		this->ContentsPopup().VerticalOffset(region.y); 
-		this->ContentsPopup().IsOpen(true); 
-
-		co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
-		co_await context; 
-		m_bookContents.SetSelectedIndex(m_readingHistory.ChapterIndex()); 
+		this->ContentsPopup().IsOpen(true);
 	}
 
-	// 显示小说信息列表
-	void MainWindow::ShowNovelInfo(
+	void MainWindow::ShowSettings(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		auto region = this->GetPopupRegion(0.5f, 0.5f);
+		auto region = this->GetPopupRegion(0.6f, 0.6f);
 
-		m_novelInfoControl.Height(region.w);
-		m_novelInfoControl.Width(region.z);
+		m_settingsControl.Height(region.w);
+		m_settingsControl.Width(region.z);
 
-		this->NovelFileInfoPopup().HorizontalOffset(region.x);
-		this->NovelFileInfoPopup().VerticalOffset(region.y);
-
-		m_novelInfoControl.SetNovelBook(m_novelBook);
-		this->NovelFileInfoPopup().IsOpen(true);
+		this->SettingsPopup().HorizontalOffset(region.x);
+		this->SettingsPopup().VerticalOffset(region.y);
+		this->SettingsPopup().IsOpen(true);
 	}
 
 
 	void MainWindow::Window_Closed(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::WindowEventArgs const&)
 	{
-		m_readingHistory.Save(); 
-		m_settings.Save(); 
+		m_viewModel.SaveData(); 
 	}
 
-	// 记录滚动位置
 	void MainWindow::ContentScrollView_ViewChanged(
 		winrt::Microsoft::UI::Xaml::Controls::ScrollView const&, winrt::Windows::Foundation::IInspectable const&)
 	{
-		double verticalOffset = this->ContentScrollView().VerticalOffset(); 
-		m_readingHistory.VerticalOffset(verticalOffset);
+		double verticalOffset = this->ContentScrollView().VerticalOffset();
+		m_viewModel.ReaderVerticalOffset(verticalOffset);
 	}
 
-	// 向上滚动
 	void MainWindow::OnReaderRegionScrollUp(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		auto viewportHeight = this->ContentScrollView().ViewportHeight(); 
-		auto lineHeight = m_settings.ReaderLineHeight();
+		auto lineHeight = m_viewModel.LineHeight();
 		auto scrollAmount = std::floor(viewportHeight / lineHeight) * lineHeight; 
 
 		auto verticalOffset = this->ContentScrollView().VerticalOffset(); 
@@ -273,12 +191,11 @@ namespace winrt::Win2dTextReader::implementation
 		this->ContentScrollView().ScrollBy(0.0, -scrollAmount);
 	}
 
-	// 向下滚动
 	void MainWindow::OnReaderRegionScrollDown(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
 		auto viewportHeight = this->ContentScrollView().ViewportHeight();
-		auto lineHeight = m_settings.ReaderLineHeight();
+		auto lineHeight = m_viewModel.LineHeight();
 		auto scrollAmount = std::floor(viewportHeight / lineHeight) * lineHeight;
 
 		auto restAmount = this->ContentScrollView().ScrollableHeight() - this->ContentScrollView().VerticalOffset();
@@ -290,28 +207,29 @@ namespace winrt::Win2dTextReader::implementation
 		this->ContentScrollView().ScrollBy(0.0, scrollAmount);
 	}
 
-	// 显示设置
-	void MainWindow::ShowSettings(
-		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+	winrt::event_token MainWindow::ChaptersChanged(winrt::Win2dTextReader::ObjectAction const& handler)
 	{
-		winrt::apartment_context context;
+		return m_chaptersChanged.add(handler);
+	}
 
-		auto region = this->GetPopupRegion(0.6f, 0.6f); 
+	void MainWindow::ChaptersChanged(winrt::event_token const& token) noexcept
+	{
+		m_chaptersChanged.remove(token);
+	}
 
-		m_settings.Height(region.w);
-		m_settings.Width(region.z);
-
-		this->SettingsPopup().HorizontalOffset(region.x);
-		this->SettingsPopup().VerticalOffset(region.y);
-		this->SettingsPopup().IsOpen(true);
+	void MainWindow::OnViewModelPropertyChanged(
+		winrt::Windows::Foundation::IInspectable const& , 
+		winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs const& e)
+	{
+		if (e.PropertyName() == L"CurrentChapter") {
+			this->ContentsPopup().IsOpen(false);
+			++m_chaptersCounter; 
+			if (m_chaptersCounter != 1) {
+				this->ContentScrollView().ScrollTo(0, 0); 
+			}
+		}
 	}
 }
-
-
-
-
-
-
 
 
 

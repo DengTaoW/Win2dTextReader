@@ -7,6 +7,7 @@
     xmlns:xw="using:Xuanwen.Novel"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="UserControl_Loaded"
     mc:Ignorable="d">
 
     <Border Padding="20" 
@@ -21,14 +22,14 @@
                 <RowDefinition Height="*" /> 
             </Grid.RowDefinitions>
 
-            <TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" >
-                目录
-            </TextBlock>
-            
+            <TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Text="目录" />
+
             <ListView x:Name="ContentsListView" 
                       Grid.Row="1"
                       SelectionMode="Single" 
-                      SelectionChanged="ContentsListView_SelectionChanged" >
+                      ItemsSource="{x:Bind ViewModel.CurrentBook.Chapters, Mode=OneWay}"
+                      SelectedIndex="{x:Bind ViewModel.ChapterIndex, Mode=TwoWay}" >
+                
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="xw:Chapter">
                         <TextBlock Text="{x:Bind Title}" />

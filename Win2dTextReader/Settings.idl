@@ -1,18 +1,12 @@
+import "MainWindowViewModel.idl"; 
+
 namespace Win2dTextReader
 {
     [default_interface]
-    runtimeclass Settings : Microsoft.UI.Xaml.Controls.UserControl, Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    runtimeclass Settings : Microsoft.UI.Xaml.Controls.UserControl
     {
-        Settings();
+        Settings(MainWindowViewModel viewModel);
         
-        Double ReaderLineHeight{ get; };
-        Double ReaderFontSize{ get; };
-        Microsoft.UI.Xaml.Media.FontFamily ReaderFontFamily{ get; }; 
-
-        Windows.Foundation.Collections.IVector<Object> FontSizeValues{ get; }; 
-        Windows.Foundation.Collections.IVector<Object> LineHeightValues{ get; }; 
-        Windows.Foundation.Collections.IVector<Object> FontFamilyValues{ get; }; 
-
-        void Save(); 
+        MainWindowViewModel ViewModel{ get; };
     }
 }

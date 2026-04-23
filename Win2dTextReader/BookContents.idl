@@ -1,15 +1,12 @@
 import "Delegates.idl"; 
+import "MainWindowViewModel.idl"; 
 
 namespace Win2dTextReader
 {
     [default_interface]
     runtimeclass BookContents : Microsoft.UI.Xaml.Controls.UserControl
     {
-        BookContents(); 
-        
-        void SetChapters(Xuanwen.Novel.ChaptersCollection chapters); 
-        void SetSelectedIndex(UInt32 index); 
-        
-        event ChapterAction SelectedChapterChanged; 
+        BookContents(MainWindowViewModel viewModel);
+        MainWindowViewModel ViewModel{ get; };
     }
 }

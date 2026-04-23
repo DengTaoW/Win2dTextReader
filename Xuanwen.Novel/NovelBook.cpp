@@ -20,7 +20,7 @@ namespace winrt::Xuanwen::Novel::implementation
     NovelBook::NovelBook(hstring const& filePath)
         : m_filePath{ filePath }, m_totalChars{0}
     {
-        m_chapters = winrt::Xuanwen::Novel::ChaptersCollection();
+        m_chapters = winrt::single_threaded_observable_vector<winrt::Xuanwen::Novel::Chapter>(); 
     }
 
     winrt::Windows::Foundation::IAsyncAction NovelBook::InitializeAsync()
@@ -69,7 +69,7 @@ namespace winrt::Xuanwen::Novel::implementation
         // 5. 判断第一章是否为空，如果是就移除
         if (m_chapters.Size() > 0) {
             winrt::Xuanwen::Novel::Chapter firstChapter = m_chapters.GetAt(0); 
-            std::wstring_view textView{ firstChapter.Text() }; 
+            std::wstring textView{ firstChapter.Text().c_str()};
 
             if (NovelBook::IsEmpty(textView)) {
                 m_chapters.RemoveAt(0); 
@@ -92,7 +92,7 @@ namespace winrt::Xuanwen::Novel::implementation
         return m_totalChars; 
     }
 
-    winrt::Xuanwen::Novel::ChaptersCollection NovelBook::Chapters()
+    winrt::Windows::Foundation::Collections::IVector<winrt::Xuanwen::Novel::Chapter> NovelBook::Chapters()
     {
         return m_chapters; 
     }
@@ -243,8 +243,6 @@ namespace winrt::Xuanwen::Novel::implementation
         size_t chapterStart = 0; 
         size_t chapterEnd = 0; 
 
-        uint32_t chapterIndex = 0;
-
         while (lineStart < content.length())
         {
             lineEnd = content.find_first_of(L'\n', lineStart + 1);
@@ -256,17 +254,15 @@ namespace winrt::Xuanwen::Novel::implementation
             if (IsTitle(line)) {
                 chapterEnd = lineStart; 
                 std::wstring_view chapterText = content.substr(chapterStart, chapterEnd - chapterStart); 
-                winrt::Xuanwen::Novel::Chapter chapter{ chapterIndex, winrt::hstring{chapterText} };
+                winrt::Xuanwen::Novel::Chapter chapter{ winrt::hstring{chapterText} };
                 m_chapters.Append(chapter);
-
-                ++chapterIndex; 
                 chapterStart = chapterEnd + 1; 
             }
             lineStart = lineEnd;
         }
 
         std::wstring_view lastChapterText = content.substr(chapterStart);
-        winrt::Xuanwen::Novel::Chapter lastChapter{ chapterIndex, winrt::hstring {lastChapterText} }; 
+        winrt::Xuanwen::Novel::Chapter lastChapter{  winrt::hstring {lastChapterText} }; 
         m_chapters.Append(lastChapter); 
     }
 
@@ -275,7 +271,6 @@ namespace winrt::Xuanwen::Novel::implementation
         size_t lineStart = 0;
         size_t lineEnd = 0;
         size_t chapterEnd = 0;
-        uint32_t chapterIndex = 0;
 
         std::queue<size_t> chapterStartQueue; 
 
@@ -298,10 +293,8 @@ namespace winrt::Xuanwen::Novel::implementation
                 chapterStartQueue.pop(); 
 
                 std::wstring_view chapterText = content.substr(chapterStart, chapterEnd - chapterStart);
-                winrt::Xuanwen::Novel::Chapter chapter{ chapterIndex, winrt::hstring{chapterText} };
+                winrt::Xuanwen::Novel::Chapter chapter{winrt::hstring{chapterText} };
                 m_chapters.Append(chapter);
-
-                ++chapterIndex;
             }
             NEXT:
             lineStart = lineEnd + 1;
@@ -311,7 +304,7 @@ namespace winrt::Xuanwen::Novel::implementation
             return; 
 
         std::wstring_view lastChapterText = content.substr(chapterStartQueue.front());
-        winrt::Xuanwen::Novel::Chapter lastChapter{ chapterIndex, winrt::hstring { lastChapterText} };
+        winrt::Xuanwen::Novel::Chapter lastChapter{ winrt::hstring { lastChapterText} };
         m_chapters.Append(lastChapter);
     }
 }

@@ -14,7 +14,7 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid RowSpacing="20" Margin="10">
+    <Grid RowSpacing="10" Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" /> 
@@ -22,22 +22,24 @@
 
         <Grid Grid.Row="0">
             <TextBlock Grid.Row="1" FontWeight="Bold">
-                <Run x:Name="BookNameTextBlock" /> -
-                <Run x:Name="ChapterTitleTextBlock" />
+                <Run Text="{x:Bind ViewModel.CurrentBook.Name, Mode=OneWay}" /> -
+                <Run Text="{x:Bind ViewModel.CurrentChapter.Title, Mode=OneWay}" />
             </TextBlock>
         </Grid>
 
         <Grid Grid.Row="1" x:Name="ReaderRegion">
             <!-- 阅读区域 -->
             <ScrollView x:Name="ContentScrollView" 
-                          ZoomMode="Disabled"
-                          HorizontalScrollMode="Disabled" 
-                          ViewChanged="ContentScrollView_ViewChanged"
-                          VerticalScrollMode="Auto">
+                        ZoomMode="Disabled"
+                        Padding="20 5"
+                        HorizontalScrollMode="Disabled" 
+                        ViewChanged="ContentScrollView_ViewChanged"
+                        VerticalScrollMode="Auto">
                 <TextBlock x:Name="ChapterContentTextBlock"
-                           FontFamily="{x:Bind ReaderSettings.ReaderFontFamily, Mode=OneWay}"
-                           LineHeight="{x:Bind ReaderSettings.ReaderLineHeight, Mode=OneWay}"
-                           FontSize="{x:Bind ReaderSettings.ReaderFontSize, Mode=OneWay}"
+                           FontFamily="{x:Bind ViewModel.FontFamily, Mode=OneWay}"
+                           LineHeight="{x:Bind ViewModel.LineHeight, Mode=OneWay}"
+                           FontSize="{x:Bind ViewModel.FontSize, Mode=OneWay}"
+                           Text="{x:Bind ViewModel.CurrentChapter.Text, Mode=OneWay}"
                            LineStackingStrategy="BlockLineHeight"
                            TextWrapping="Wrap" />
 
@@ -60,13 +62,6 @@
                         <MenuFlyoutItem Text="设置" Click="ShowSettings">
                             <MenuFlyoutItem.KeyboardAccelerators>
                                 <KeyboardAccelerator Modifiers="None" Key="F2" />
-                            </MenuFlyoutItem.KeyboardAccelerators>
-                        </MenuFlyoutItem>
-
-
-                        <MenuFlyoutItem Text="小说信息" Click="ShowNovelInfo">
-                            <MenuFlyoutItem.KeyboardAccelerators>
-                                <KeyboardAccelerator Modifiers="None" Key="F3" />
                             </MenuFlyoutItem.KeyboardAccelerators>
                         </MenuFlyoutItem>
 
@@ -99,13 +94,10 @@
             </ScrollView>
             
             <!-- 目录 -->
-            <Popup x:Name="ContentsPopup" IsLightDismissEnabled="True" />
-            
+            <Popup x:Name="ContentsPopup" IsLightDismissEnabled="True"/>
+
             <!-- 设置 -->
             <Popup x:Name="SettingsPopup" IsLightDismissEnabled="True" /> 
-            
-            <!-- 小说信息 -->
-            <Popup x:Name="NovelFileInfoPopup" IsLightDismissEnabled="True" /> 
         </Grid>
     </Grid>
 </Window>

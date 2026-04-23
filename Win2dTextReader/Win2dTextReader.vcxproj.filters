@@ -8,9 +8,6 @@
     <Midl Include="Delegates.idl">
       <Filter>Components</Filter>
     </Midl>
-    <Midl Include="ReadingHistory.idl">
-      <Filter>Components</Filter>
-    </Midl>
     <Midl Include="MainWindowViewModel.idl">
       <Filter>ViewModels</Filter>
     </Midl>
@@ -27,9 +24,6 @@
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp">
       <Filter>Packages</Filter>
-    </ClCompile>
-    <ClCompile Include="ReadingHistory.cpp">
-      <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="MainWindowViewModel.cpp">
       <Filter>ViewModels</Filter>
@@ -230,9 +224,6 @@
     <ClInclude Include="pch.h">
       <Filter>Packages</Filter>
     </ClInclude>
-    <ClInclude Include="ReadingHistory.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="MainWindowViewModel.h">
       <Filter>ViewModels</Filter>
     </ClInclude>
@@ -264,9 +255,6 @@
       <Filter>Views</Filter>
     </Page>
     <Page Include="BookContents.xaml">
-      <Filter>Views</Filter>
-    </Page>
-    <Page Include="NovelInfoControl.xaml">
       <Filter>Views</Filter>
     </Page>
     <Page Include="Settings.xaml">

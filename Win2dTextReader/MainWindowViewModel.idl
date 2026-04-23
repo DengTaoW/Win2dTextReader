@@ -10,8 +10,13 @@ namespace Win2dTextReader
 		
 		void LoadData(); 
 		void SaveData();
+		void OnChaptersChanged(Object obj); 
 
-		UInt32 ChapterIndex; 
+		Int32 ChapterIndex; 
+		Int32 LineHeightIndex;
+		Int32 FontSizeIndex;
+		Int32 FontFamilyIndex;
+
 		Int32 WindowPositionX; 
 		Int32 WindowPositionY; 
 		Int32 WindowSizeW; 
@@ -28,9 +33,5 @@ namespace Win2dTextReader
 		Windows.Foundation.Collections.IVector<FontItem> FontItems { get; }; 
 		Windows.Foundation.Collections.IVector<DoubleItem> FontSizeItems{ get; }; 
 		Windows.Foundation.Collections.IVector<DoubleItem> LineHeightItems{ get; };
-
-		UInt32 LineHeightIndex; 
-		UInt32 FontSizeIndex; 
-		UInt32 FontFamilyIndex; 
 	}
 }

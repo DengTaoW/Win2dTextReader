@@ -4,15 +4,9 @@
 
 namespace winrt::Xuanwen::Novel::implementation
 {
-    Chapter::Chapter(uint32_t index, hstring const& text)
-        : m_index {index}
-        , m_text {text}
+    Chapter::Chapter(hstring const& text)
+        : m_text {text}
     {
-    }
-
-    uint32_t Chapter::Index() const
-    {
-        return m_index; 
     }
 
     hstring Chapter::Title()

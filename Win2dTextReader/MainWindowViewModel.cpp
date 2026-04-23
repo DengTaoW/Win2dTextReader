@@ -5,19 +5,33 @@
 
 namespace winrt::Win2dTextReader::implementation
 {
+	winrt::hstring MainWindowViewModel::INT32_VALUES{ L"INT32_VALUES" }; 
+	winrt::hstring MainWindowViewModel::UINT32_VALUES{ L"UINT32_VALUES" }; 
+	winrt::hstring MainWindowViewModel::DOUBLE_VALUES{ L"DOUBLE_VALUES" }; 
+	winrt::hstring MainWindowViewModel::STRING_VALUES{ L"STRING_VALUES" }; 
+
+
 	MainWindowViewModel::MainWindowViewModel()
 	{
 		m_fontItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::FontItem>();
+		m_lineHeightItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::DoubleItem>(); 
+		m_fontSizeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::DoubleItem>(); 
+
 		this->InitializeCollections();
 
 		auto appData = winrt::Microsoft::Windows::Storage::ApplicationData::GetDefault();
 		m_localSettings = appData.LocalSettings().Values();
+
+		if (m_localSettings.HasKey(INT32_VALUES)) {
+			this->LoadData(); 
+		}
+		else {
+			this->SetDefaultValues(); 
+		}
 	}
 
 	void MainWindowViewModel::LoadData()
 	{
-		// 1. Int32Values
-		const hstring INT32_VALUES{ L"Int32Values" }; 
 		if (m_localSettings.HasKey(INT32_VALUES)) {
 			auto int32ValuesObject = 
 				m_localSettings.Lookup(INT32_VALUES).as<winrt::Windows::Foundation::IReferenceArray<int32_t>>();
@@ -28,12 +42,28 @@ namespace winrt::Win2dTextReader::implementation
 			m_windowPositionY = int32Values[1]; 
 			m_windowSizeW = int32Values[2]; 
 			m_windowSizeH = int32Values[3];
+			m_chapterIndex = int32Values[4]; 
+			m_lineHeightIndex = int32Values[5]; 
+			m_fontSizeIndex = int32Values[6]; 
+			m_fontFamilyIndex = int32Values[7]; 
 		}
 
-		// 2. UInt32Values 
-		const hstring UINT32_VALUES{ L"UInt32Values" };
-		if (m_localSettings.HasKey(UINT32_VALUES)) {
+		if (m_localSettings.HasKey(STRING_VALUES)) {
+			auto stringValuesObject =
+				m_localSettings.Lookup(STRING_VALUES).as < winrt::Windows::Foundation::IReferenceArray<winrt::hstring>>(); 
+			winrt::com_array<winrt::hstring> stringValues; 
+			stringValuesObject.GetStringArray(stringValues); 
 
+			m_currentBook = winrt::Xuanwen::Novel::NovelBook(stringValues[0]); 
+		}
+
+		if (m_localSettings.HasKey(DOUBLE_VALUES)) {
+			auto doubleValuesObject =
+				m_localSettings.Lookup(DOUBLE_VALUES).as<winrt::Windows::Foundation::IReferenceArray<double>>(); 
+			winrt::com_array<double> doubleValues; 
+			doubleValuesObject.GetDoubleArray(doubleValues); 
+
+			m_readerVerticalOffset = doubleValues[0]; 
 		}
 	}
 	void MainWindowViewModel::SaveData()
@@ -42,30 +72,22 @@ namespace winrt::Win2dTextReader::implementation
 			m_windowPositionX,
 			m_windowPositionY,
 			m_windowSizeW, 
-			m_windowSizeH
+			m_windowSizeH, 
+			m_chapterIndex,
+			m_lineHeightIndex,
+			m_fontSizeIndex,
+			m_fontFamilyIndex
 		};
 
 		auto int32ValuesObject = winrt::Windows::Foundation::PropertyValue::CreateInt32Array(int32Values); 
-		m_localSettings.Insert(L"Int32Values", int32ValuesObject); 
-
-
-		std::vector<uint32_t> uint32Values = {
-			m_chapterIndex, 
-			m_lineHeightIndex, 
-			m_fontSizeIndex, 
-			m_fontFamilyIndex
-		}; 
-		
-		auto uint32ValuesObject = winrt::Windows::Foundation::PropertyValue::CreateUInt32Array(uint32Values); 
-		m_localSettings.Insert(L"UInt32Values", uint32ValuesObject); 
-
+		m_localSettings.Insert(INT32_VALUES, int32ValuesObject); 
 
 		std::vector<hstring> stringValues = {
 			m_currentBook.FilePath()
 		}; 
 
 		auto stringValuesObject = winrt::Windows::Foundation::PropertyValue::CreateStringArray(stringValues);
-		m_localSettings.Insert(L"StringValues", stringValuesObject); 
+		m_localSettings.Insert(STRING_VALUES, stringValuesObject); 
 
 		
 		std::vector<double> doubleValues = {
@@ -73,15 +95,32 @@ namespace winrt::Win2dTextReader::implementation
 		}; 
 
 		auto doubleValuesObject = winrt::Windows::Foundation::PropertyValue::CreateDoubleArray(doubleValues); 
-		m_localSettings.Insert(L"DoubleValues", doubleValuesObject);
+		m_localSettings.Insert(DOUBLE_VALUES, doubleValuesObject);
 	}
 
-	uint32_t MainWindowViewModel::ChapterIndex() const
+	void MainWindowViewModel::OnChaptersChanged(winrt::Windows::Foundation::IInspectable const& obj)
+	{
+		bool isNewBook = winrt::unbox_value<bool>(obj); 
+		if (isNewBook) {
+			m_chapterIndex = 0; 
+		}
+
+		if (m_currentBook != nullptr) {
+			this->NotifyPropertyChanged(L"CurrentChapter"); 
+			this->NotifyPropertyChanged(L"CurrentBook"); 
+		}
+	}
+
+	int32_t MainWindowViewModel::ChapterIndex() const
 	{
 		return m_chapterIndex;
 	}
-	void MainWindowViewModel::ChapterIndex(uint32_t value)
+	void MainWindowViewModel::ChapterIndex(int32_t value)
 	{
+		int32_t totalChapters = m_currentBook.Chapters().Size(); 
+		if (value >= totalChapters || value < 0)
+			return; 
+
 		if (value != m_chapterIndex) {
 			m_chapterIndex = value;
 			this->NotifyPropertyChanged(L"CurrentChapter");
@@ -149,7 +188,10 @@ namespace winrt::Win2dTextReader::implementation
 	}
 	void MainWindowViewModel::CurrentBook(winrt::Xuanwen::Novel::NovelBook const& value)
 	{
-		m_currentBook = value;
+		if (value != m_currentBook) {
+			m_currentBook = value; 
+			this->NotifyPropertyChanged(L"CurrentBook"); 
+		}
 	}
 
 	winrt::Xuanwen::Novel::Chapter MainWindowViewModel::CurrentChapter()
@@ -158,22 +200,22 @@ namespace winrt::Win2dTextReader::implementation
 			return nullptr;
 		}
 
-		auto totalChapters = m_currentBook.Chapters().Size();
+		auto totalChapters = static_cast<int>(m_currentBook.Chapters().Size());
 		if (totalChapters == 0) {
 			return nullptr;
 		}
-
 		if (m_chapterIndex >= totalChapters) {
 			m_chapterIndex = 0;
 		}
 
-		return m_currentBook.Chapters().GetAt(m_chapterIndex);
+		return m_currentBook.Chapters().GetAt((uint32_t)m_chapterIndex);
 	}
 
 	double MainWindowViewModel::LineHeight() const
 	{
-		winrt::Win2dTextReader::DoubleItem item = m_lineHeightItems.GetAt(m_lineHeightIndex);
-		return item.Value();
+		winrt::Win2dTextReader::DoubleItem item = m_lineHeightItems.GetAt((uint32_t)m_lineHeightIndex);
+		double result = item.Value() * this->FontSize();
+		return result; 
 	}
 
 	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::DoubleItem> MainWindowViewModel::LineHeightItems()
@@ -181,12 +223,12 @@ namespace winrt::Win2dTextReader::implementation
 		return m_lineHeightItems;
 	}
 
-	uint32_t MainWindowViewModel::LineHeightIndex() const
+	int32_t MainWindowViewModel::LineHeightIndex() const
 	{
 		return m_lineHeightIndex;
 	}
 
-	void MainWindowViewModel::LineHeightIndex(uint32_t value)
+	void MainWindowViewModel::LineHeightIndex(int32_t value)
 	{
 		if (m_lineHeightIndex != value) {
 			m_lineHeightIndex = value;
@@ -196,7 +238,7 @@ namespace winrt::Win2dTextReader::implementation
 
 	double MainWindowViewModel::FontSize() const
 	{
-		winrt::Win2dTextReader::DoubleItem item = m_fontSizeItems.GetAt(m_lineHeightIndex);
+		winrt::Win2dTextReader::DoubleItem item = m_fontSizeItems.GetAt((uint32_t)m_fontSizeIndex);
 		return item.Value();
 	}
 
@@ -205,12 +247,12 @@ namespace winrt::Win2dTextReader::implementation
 		return m_fontSizeItems;
 	}
 
-	uint32_t MainWindowViewModel::FontSizeIndex() const
+	int32_t MainWindowViewModel::FontSizeIndex() const
 	{
 		return m_fontSizeIndex;
 	}
 
-	void MainWindowViewModel::FontSizeIndex(uint32_t value)
+	void MainWindowViewModel::FontSizeIndex(int32_t value)
 	{
 		if (value != m_fontSizeIndex) {
 			m_fontSizeIndex = value;
@@ -220,7 +262,7 @@ namespace winrt::Win2dTextReader::implementation
 
 	winrt::Microsoft::UI::Xaml::Media::FontFamily MainWindowViewModel::FontFamily()
 	{
-		winrt::Win2dTextReader::FontItem item = m_fontItems.GetAt(m_fontFamilyIndex);
+		winrt::Win2dTextReader::FontItem item = m_fontItems.GetAt((uint32_t)m_fontFamilyIndex);
 		return item.FontFamily();
 	}
 
@@ -229,12 +271,12 @@ namespace winrt::Win2dTextReader::implementation
 		return m_fontItems;
 	}
 
-	uint32_t MainWindowViewModel::FontFamilyIndex() const
+	int32_t MainWindowViewModel::FontFamilyIndex() const
 	{
 		return m_fontFamilyIndex;
 	}
 
-	void MainWindowViewModel::FontFamilyIndex(uint32_t value)
+	void MainWindowViewModel::FontFamilyIndex(int32_t value)
 	{
 		if (m_fontFamilyIndex != value) {
 			m_fontFamilyIndex = value;
@@ -263,12 +305,14 @@ namespace winrt::Win2dTextReader::implementation
 		for (size_t i = 0; i < 8; i++) {
 			winrt::Win2dTextReader::DoubleItem item(fontSize, 0);
 			m_fontSizeItems.Append(item);
+			fontSize += 2.0; 
 		}
 
 		double lineHeight = 1.2;
 		for (size_t i = 0; i < 7; i++) {
 			winrt::Win2dTextReader::DoubleItem item(lineHeight, 1);
 			m_lineHeightItems.Append(item);
+			lineHeight += 0.2; 
 		}
 
 		std::map<std::wstring, std::wstring> fontNamesDict = {
@@ -283,5 +327,25 @@ namespace winrt::Win2dTextReader::implementation
 			winrt::Win2dTextReader::FontItem item(fontName, displayName); 
 			m_fontItems.Append(item); 
 		}
+	}
+
+	void MainWindowViewModel::SetDefaultValues()
+	{
+		int screenWidth = GetSystemMetrics(SM_CXSCREEN); 
+		int screenHeight = GetSystemMetrics(SM_CYSCREEN); 
+
+		m_windowSizeW = static_cast<int>(screenWidth * 0.5); 
+		m_windowSizeH = static_cast<int>(screenHeight * 0.7);
+
+		m_windowPositionX = (screenWidth - m_windowSizeW) / 2; 
+		m_windowPositionY = (screenHeight - m_windowSizeH) / 2; 
+
+		m_chapterIndex = 0; 
+		m_fontSizeIndex = 4; 
+		m_lineHeightIndex = 3;
+		m_readerVerticalOffset = 0; 
+
+		m_fontFamilyIndex = 0; 
+		m_currentBook = winrt::Xuanwen::Novel::NovelBook(L"ms-appx:///Assets/使用说明.txt");
 	}
 }
