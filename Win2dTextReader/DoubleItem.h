@@ -10,7 +10,7 @@ namespace winrt::Win2dTextReader::implementation
 
         DoubleItem(double x, int32_t digits);
         hstring DisplayText();
-        double Value();
+        double Value() const;
 
     private:
         double m_value; 

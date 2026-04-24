@@ -139,6 +139,7 @@
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
+    <ClInclude Include="ThemeItem.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -148,6 +149,21 @@
     <Page Include="MainWindow.xaml" />
     <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Dark.xaml">
+      <DeploymentContent>true</DeploymentContent>
+    </Page>
+    <Page Include="Themes\Foreset.xaml">
+      <DeploymentContent>true</DeploymentContent>
+    </Page>
+    <Page Include="Themes\Ocean.xaml">
+      <DeploymentContent>true</DeploymentContent>
+    </Page>
+    <Page Include="Themes\Sakura.xaml">
+      <DeploymentContent>true</DeploymentContent>
+    </Page>
+    <Page Include="Themes\SistersSoft.xaml">
+      <DeploymentContent>true</DeploymentContent>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +188,7 @@
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="ThemeItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="BookContents.idl">
@@ -190,6 +207,7 @@
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Midl>
+    <Midl Include="ThemeItem.idl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LargeTile.scale-100.png" />

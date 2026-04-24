@@ -50,7 +50,6 @@ namespace winrt::Win2dTextReader::implementation
 			co_await m_viewModel.CurrentBook().InitializeAsync();
 			m_chaptersChanged(winrt::box_value(false));
 
-			winrt::resume_after(std::chrono::milliseconds{ 50 }); 
 			this->ContentScrollView().ScrollBy(0, m_viewModel.ReaderVerticalOffset()); 
 		}
 	}
@@ -221,15 +220,24 @@ namespace winrt::Win2dTextReader::implementation
 		winrt::Windows::Foundation::IInspectable const& , 
 		winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs const& e)
 	{
-		if (e.PropertyName() == L"CurrentChapter") {
+		winrt::hstring propertyName = e.PropertyName(); 
+
+		if (propertyName == L"CurrentChapter") {
 			this->ContentsPopup().IsOpen(false);
 			++m_chaptersCounter; 
 			if (m_chaptersCounter != 1) {
 				this->ContentScrollView().ScrollTo(0, 0); 
 			}
 		}
+		else if (propertyName == L"ThemeIndex") {
+			auto rootElement = this->Content().as<Microsoft::UI::Xaml::FrameworkElement>();
+			auto currentTheme = rootElement.RequestedTheme(); 
+			
+			rootElement.RequestedTheme(winrt::Microsoft::UI::Xaml::ElementTheme::Dark); 
+			rootElement.RequestedTheme(winrt::Microsoft::UI::Xaml::ElementTheme::Light); 
+			rootElement.RequestedTheme(currentTheme);
+		}
 	}
 }
-
 
 

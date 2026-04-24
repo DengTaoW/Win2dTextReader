@@ -14,14 +14,14 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid RowSpacing="10" Margin="10">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" /> 
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <TextBlock Grid.Row="1" FontWeight="Bold">
+        <Grid Grid.Row="0" Margin="10">
+            <TextBlock Grid.Row="1" FontWeight="Bold" Foreground="{ThemeResource AppFontColor}">
                 <Run Text="{x:Bind ViewModel.CurrentBook.Name, Mode=OneWay}" /> -
                 <Run Text="{x:Bind ViewModel.CurrentChapter.Title, Mode=OneWay}" />
             </TextBlock>
@@ -31,7 +31,7 @@
             <!-- 阅读区域 -->
             <ScrollView x:Name="ContentScrollView" 
                         ZoomMode="Disabled"
-                        Padding="20 5"
+                        Padding="20 0"
                         HorizontalScrollMode="Disabled" 
                         ViewChanged="ContentScrollView_ViewChanged"
                         VerticalScrollMode="Auto">
@@ -40,6 +40,7 @@
                            LineHeight="{x:Bind ViewModel.LineHeight, Mode=OneWay}"
                            FontSize="{x:Bind ViewModel.FontSize, Mode=OneWay}"
                            Text="{x:Bind ViewModel.CurrentChapter.Text, Mode=OneWay}"
+                           Foreground="{ThemeResource AppFontColor}"
                            LineStackingStrategy="BlockLineHeight"
                            TextWrapping="Wrap" />
 

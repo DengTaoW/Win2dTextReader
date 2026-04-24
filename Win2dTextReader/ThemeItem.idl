@@ -1,0 +1,10 @@
+namespace Win2dTextReader
+{
+	[default_interface]
+	runtimeclass ThemeItem
+	{
+		ThemeItem(String xamlName); 
+		String XamlName{ get; };
+		Windows.Foundation.Uri Uri{ get; }; 
+	}
+}

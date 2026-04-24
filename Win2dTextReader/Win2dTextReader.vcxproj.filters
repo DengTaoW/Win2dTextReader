@@ -17,6 +17,9 @@
     <Midl Include="DoubleItem.idl">
       <Filter>Components</Filter>
     </Midl>
+    <Midl Include="ThemeItem.idl">
+      <Filter>Components</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -32,6 +35,9 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="DoubleItem.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ThemeItem.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -206,6 +212,9 @@
     <Filter Include="ViewModels">
       <UniqueIdentifier>{277ac00d-7053-44c7-96ba-d9ec7e93a288}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Themes">
+      <UniqueIdentifier>{4fde4f6a-c0d4-4809-82c2-d052fe6bc491}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">
@@ -231,6 +240,9 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="DoubleItem.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ThemeItem.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -259,6 +271,21 @@
     </Page>
     <Page Include="Settings.xaml">
       <Filter>Views</Filter>
+    </Page>
+    <Page Include="Themes\SistersSoft.xaml">
+      <Filter>Themes</Filter>
+    </Page>
+    <Page Include="Themes\Dark.xaml">
+      <Filter>Themes</Filter>
+    </Page>
+    <Page Include="Themes\Sakura.xaml">
+      <Filter>Themes</Filter>
+    </Page>
+    <Page Include="Themes\Foreset.xaml">
+      <Filter>Themes</Filter>
+    </Page>
+    <Page Include="Themes\Ocean.xaml">
+      <Filter>Themes</Filter>
     </Page>
   </ItemGroup>
   <ItemGroup>

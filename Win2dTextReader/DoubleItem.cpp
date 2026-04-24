@@ -18,7 +18,7 @@ namespace winrt::Win2dTextReader::implementation
         return m_displayText;
     }
 
-    double DoubleItem::Value()
+    double DoubleItem::Value() const
     {
         return m_value; 
     }
