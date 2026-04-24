@@ -6,6 +6,7 @@
 #include <string>
 #include <string_view>
 #include <queue>
+#include <filesystem>
 
 const std::wregex TITLE_REGEX{ LR"(第[\s\d零一二三四五六七八九十百千万]+章)" };
 
@@ -33,7 +34,12 @@ namespace winrt::Xuanwen::Novel::implementation
             novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromApplicationUriAsync(uri);
         }
         else {
-            novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromPathAsync(m_filePath);
+            if (std::filesystem::exists(m_filePath.c_str())) {
+                novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromPathAsync(m_filePath);
+            }
+            else {
+                co_return; 
+            }
         }
 
         m_bookName = novelFile.DisplayName(); 
@@ -46,6 +52,7 @@ namespace winrt::Xuanwen::Novel::implementation
 
         // 3. 解码字节数组
         winrt::hstring content = DecodeBytesArray(data, dataLength); 
+
         if (content.empty()) {
             co_return; 
         }
