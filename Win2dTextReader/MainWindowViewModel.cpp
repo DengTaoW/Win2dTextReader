@@ -16,7 +16,7 @@ namespace winrt::Win2dTextReader::implementation
 		m_fontItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::FontItem>();
 		m_lineHeightItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::DoubleItem>(); 
 		m_fontSizeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::DoubleItem>(); 
-		m_themeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::ThemeItem>(); 
+		m_themeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::ReaderTheme>(); 
 
 		this->InitializeCollections();
 
@@ -25,7 +25,6 @@ namespace winrt::Win2dTextReader::implementation
 
 		if (m_localSettings.HasKey(INT32_VALUES)) {
 			this->LoadData(); 
-			this->SetAppTheme(m_themeIndex); 
 		}
 		else {
 			this->SetDefaultValues(); 
@@ -288,6 +287,14 @@ namespace winrt::Win2dTextReader::implementation
 		}
 	}
 
+	winrt::Win2dTextReader::ReaderTheme MainWindowViewModel::AppTheme()
+	{
+		if (m_themeIndex >= 0 && m_themeIndex < m_themeItems.Size()) {
+			return m_themeItems.GetAt(m_themeIndex); 
+		}
+		return nullptr; 
+	}
+
 	int32_t MainWindowViewModel::ThemeIndex() const
 	{
 		return m_themeIndex; 
@@ -300,11 +307,10 @@ namespace winrt::Win2dTextReader::implementation
 		}
 
 		m_themeIndex = value; 
-		this->SetAppTheme(m_themeIndex); 
-		this->NotifyPropertyChanged(L"ThemeIndex"); 
+		this->NotifyPropertyChanged(L"AppTheme"); 
 	}
 
-	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::ThemeItem> MainWindowViewModel::ThemeItems()
+	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::ReaderTheme> MainWindowViewModel::ThemeItems()
 	{
 		return m_themeItems;
 	}
@@ -353,17 +359,21 @@ namespace winrt::Win2dTextReader::implementation
 			m_fontItems.Append(item); 
 		}
 
-		std::vector<hstring> themeXamlFiles = {
-			L"Dark.xaml", 
-			L"Foreset.xaml",
-			L"Ocean.xaml", 
-			L"Sakura.xaml",
-			L"SistersSoft.xaml"
+		std::vector<hstring> themeNames = {
+			L"象牙书卷", 
+			L"午夜静读",
+			L"林间晨露", 
+			L"樱花物语",
+			L"极客黑客",
+			L"朝霞映雪",
+			L"极地之光",
+			L"暮色幽谷",
+			L"幻梦星辰",
 		};
-
-		for (const auto& file : themeXamlFiles) {
-			winrt::Win2dTextReader::ThemeItem item{ file };
-			m_themeItems.Append(item); 
+		
+		for (int32_t i = 0; i < themeNames.size(); ++i) {
+			winrt::Win2dTextReader::ReaderTheme theme{ i, themeNames[i] }; 
+			m_themeItems.Append(theme); 
 		}
 	}
 
@@ -386,20 +396,5 @@ namespace winrt::Win2dTextReader::implementation
 		m_fontFamilyIndex = 0; 
 		m_themeIndex = 0;
 		m_currentBook = winrt::Xuanwen::Novel::NovelBook(L"ms-appx:///Assets/使用说明.txt");
-	}
-
-	void MainWindowViewModel::SetAppTheme(int32_t themeIndex)
-	{
-		winrt::Win2dTextReader::ThemeItem item = m_themeItems.GetAt(themeIndex);
-
-		auto resources = winrt::Microsoft::UI::Xaml::Application::Current().Resources();
-		auto mergedDicts = resources.MergedDictionaries();
-
-		winrt::Microsoft::UI::Xaml::ResourceDictionary newThemeDict;
-		newThemeDict.Source(item.Uri());
-
-		if (mergedDicts.Size() == 2) {
-			mergedDicts.SetAt(1, newThemeDict); 
-		}
 	}
 }

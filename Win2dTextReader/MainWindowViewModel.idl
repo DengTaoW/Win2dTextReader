@@ -1,6 +1,6 @@
 import "FontItem.idl"; 
 import "DoubleItem.idl"; 
-import "ThemeItem.idl";
+import "ReaderTheme.idl";
 
 namespace Win2dTextReader
 {
@@ -31,10 +31,11 @@ namespace Win2dTextReader
 		Double LineHeight{ get; }; 
 		Double FontSize{ get; }; 
 		Microsoft.UI.Xaml.Media.FontFamily FontFamily{ get; }; 
+		ReaderTheme AppTheme{ get; }; 
 
 		Windows.Foundation.Collections.IVector<FontItem> FontItems { get; }; 
 		Windows.Foundation.Collections.IVector<DoubleItem> FontSizeItems{ get; }; 
 		Windows.Foundation.Collections.IVector<DoubleItem> LineHeightItems{ get; };
-		Windows.Foundation.Collections.IVector<ThemeItem> ThemeItems{ get; }; 
+		Windows.Foundation.Collections.IVector<ReaderTheme> ThemeItems{ get; };
 	}
 }

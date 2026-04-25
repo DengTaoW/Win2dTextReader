@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="AppBackground_0" Color="#FDF6E3"/>
+
+    <SolidColorBrush x:Key="AppBackground_1" Color="#1A1A1A"/>
+
+    <SolidColorBrush x:Key="AppBackground_2" Color="#E6F3E6"/>
+
+    <SolidColorBrush x:Key="AppBackground_3" Color="#FFF0F5"/>
+
+    <SolidColorBrush x:Key="AppBackground_4" Color="#000000"/>
+
+    <LinearGradientBrush x:Key="AppBackground_5" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FFEDBC" Offset="0.0" />
+        <GradientStop Color="#ED4264" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="AppBackground_6" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#00C9FF" Offset="0.0" />
+        <GradientStop Color="#92FE9D" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="AppBackground_7" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#134E5E" Offset="0.0" />
+        <GradientStop Color="#71B280" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="AppBackground_8" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#8E2DE2" Offset="0.0" />
+        <GradientStop Color="#4A00E0" Offset="1.0" />
+    </LinearGradientBrush>
+
+</ResourceDictionary>

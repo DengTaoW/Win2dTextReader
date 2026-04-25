@@ -229,14 +229,6 @@ namespace winrt::Win2dTextReader::implementation
 				this->ContentScrollView().ScrollTo(0, 0); 
 			}
 		}
-		else if (propertyName == L"ThemeIndex") {
-			auto rootElement = this->Content().as<Microsoft::UI::Xaml::FrameworkElement>();
-			auto currentTheme = rootElement.RequestedTheme(); 
-			
-			rootElement.RequestedTheme(winrt::Microsoft::UI::Xaml::ElementTheme::Dark); 
-			rootElement.RequestedTheme(winrt::Microsoft::UI::Xaml::ElementTheme::Light); 
-			rootElement.RequestedTheme(currentTheme);
-		}
 	}
 }
 

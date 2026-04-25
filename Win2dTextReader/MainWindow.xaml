@@ -14,14 +14,15 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid Background="{ThemeResource AppBackgroundBrush}">
+    <Grid Background="{x:Bind ViewModel.AppTheme.Background, Mode=OneWay}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" /> 
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Margin="10">
-            <TextBlock Grid.Row="1" FontWeight="Bold" Foreground="{ThemeResource AppFontColor}">
+            <TextBlock Grid.Row="1" FontWeight="Bold" 
+                       Foreground="{x:Bind ViewModel.AppTheme.FontColor, Mode=OneWay}">
                 <Run Text="{x:Bind ViewModel.CurrentBook.Name, Mode=OneWay}" /> -
                 <Run Text="{x:Bind ViewModel.CurrentChapter.Title, Mode=OneWay}" />
             </TextBlock>
@@ -40,7 +41,7 @@
                            LineHeight="{x:Bind ViewModel.LineHeight, Mode=OneWay}"
                            FontSize="{x:Bind ViewModel.FontSize, Mode=OneWay}"
                            Text="{x:Bind ViewModel.CurrentChapter.Text, Mode=OneWay}"
-                           Foreground="{ThemeResource AppFontColor}"
+                           Foreground="{x:Bind ViewModel.AppTheme.FontColor, Mode=OneWay}"
                            LineStackingStrategy="BlockLineHeight"
                            TextWrapping="Wrap" />
 

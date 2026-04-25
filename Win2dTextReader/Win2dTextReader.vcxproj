@@ -135,11 +135,11 @@
     <ClInclude Include="MainWindow.xaml.h">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="ReaderTheme.h" />
     <ClInclude Include="Settings.xaml.h">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
-    <ClInclude Include="ThemeItem.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -150,9 +150,11 @@
     <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\BackgroundBrushes.xaml" />
     <Page Include="Themes\Dark.xaml">
       <DeploymentContent>true</DeploymentContent>
     </Page>
+    <Page Include="Themes\FontColors.xaml" />
     <Page Include="Themes\Foreset.xaml">
       <DeploymentContent>true</DeploymentContent>
     </Page>
@@ -184,11 +186,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="ReaderTheme.cpp" />
     <ClCompile Include="Settings.xaml.cpp">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
-    <ClCompile Include="ThemeItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="BookContents.idl">
@@ -203,11 +205,11 @@
       <SubType>Code</SubType>
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Midl>
+    <Midl Include="ReaderTheme.idl" />
     <Midl Include="Settings.idl">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Midl>
-    <Midl Include="ThemeItem.idl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LargeTile.scale-100.png" />

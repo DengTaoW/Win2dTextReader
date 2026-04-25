@@ -71,13 +71,13 @@
                 </ComboBox>
 
                 <ComboBox Grid.Row="1" Grid.Column="1"
-                          Header="主题文件"
+                          Header="阅读主题"
                           HorizontalAlignment="Stretch"
                           ItemsSource="{x:Bind ViewModel.ThemeItems}"
                           SelectedIndex="{x:Bind ViewModel.ThemeIndex, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="local:IThemeItem">
-                            <TextBlock Text="{x:Bind XamlName}" /> 
+                        <DataTemplate x:DataType="local:ReaderTheme">
+                            <TextBlock Text="{x:Bind DisplayName}" /> 
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
