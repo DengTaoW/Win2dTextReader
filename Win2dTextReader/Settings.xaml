@@ -76,8 +76,8 @@
                           ItemsSource="{x:Bind ViewModel.ThemeItems}"
                           SelectedIndex="{x:Bind ViewModel.ThemeIndex, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="local:ReaderTheme">
-                            <TextBlock Text="{x:Bind DisplayName}" /> 
+                        <DataTemplate x:DataType="local:AppTheme">
+                            <TextBlock Text="{x:Bind Name}" /> 
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>

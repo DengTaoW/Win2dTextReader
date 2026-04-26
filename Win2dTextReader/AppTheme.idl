@@ -1,0 +1,17 @@
+namespace Win2dTextReader
+{
+	[default_interface]
+	runtimeclass AppTheme : Microsoft.UI.Xaml.DependencyObject
+	{
+		AppTheme(); 
+		
+		static Microsoft.UI.Xaml.DependencyProperty BackgroundProperty{ get; };
+		Microsoft.UI.Xaml.Media.Brush Background{ get; set; }; 
+
+		static Microsoft.UI.Xaml.DependencyProperty ForegroundProperty{ get; }; 
+		Microsoft.UI.Xaml.Media.Brush Foreground{ get; set; }; 
+
+		static Microsoft.UI.Xaml.DependencyProperty NameProperty{ get; }; 
+		String Name{ get; set; }; 
+	}
+}

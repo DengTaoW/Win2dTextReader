@@ -35,3 +35,5 @@
 #include <strsafe.h>
 
 #include <winrt/Xuanwen.Novel.h>
+#include "WinrtTypeName.h"
+#include "AppTheme.h"

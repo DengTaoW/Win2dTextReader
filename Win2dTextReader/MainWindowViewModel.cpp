@@ -16,7 +16,7 @@ namespace winrt::Win2dTextReader::implementation
 		m_fontItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::FontItem>();
 		m_lineHeightItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::DoubleItem>(); 
 		m_fontSizeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::DoubleItem>(); 
-		m_themeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::ReaderTheme>(); 
+		m_themeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::AppTheme>(); 
 
 		this->InitializeCollections();
 
@@ -287,12 +287,10 @@ namespace winrt::Win2dTextReader::implementation
 		}
 	}
 
-	winrt::Win2dTextReader::ReaderTheme MainWindowViewModel::AppTheme()
+	winrt::Win2dTextReader::AppTheme MainWindowViewModel::AppTheme() const
 	{
-		if (m_themeIndex >= 0 && m_themeIndex < m_themeItems.Size()) {
-			return m_themeItems.GetAt(m_themeIndex); 
-		}
-		return nullptr; 
+		return m_themeItems.GetAt(m_themeIndex); 
+
 	}
 
 	int32_t MainWindowViewModel::ThemeIndex() const
@@ -310,7 +308,7 @@ namespace winrt::Win2dTextReader::implementation
 		this->NotifyPropertyChanged(L"AppTheme"); 
 	}
 
-	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::ReaderTheme> MainWindowViewModel::ThemeItems()
+	winrt::Windows::Foundation::Collections::IObservableVector<winrt::Win2dTextReader::AppTheme> MainWindowViewModel::ThemeItems()
 	{
 		return m_themeItems;
 	}
@@ -359,21 +357,19 @@ namespace winrt::Win2dTextReader::implementation
 			m_fontItems.Append(item); 
 		}
 
-		std::vector<hstring> themeNames = {
-			L"象牙书卷", 
-			L"午夜静读",
-			L"林间晨露", 
-			L"樱花物语",
-			L"极客黑客",
-			L"朝霞映雪",
-			L"极地之光",
-			L"暮色幽谷",
-			L"幻梦星辰",
-		};
-		
-		for (int32_t i = 0; i < themeNames.size(); ++i) {
-			winrt::Win2dTextReader::ReaderTheme theme{ i, themeNames[i] }; 
-			m_themeItems.Append(theme); 
+		auto resource = winrt::Microsoft::UI::Xaml::Application::Current().Resources();
+		int32_t i = 0;
+		while (true) {
+			winrt::hstring keyStr = L"Theme_" + winrt::to_hstring(i);
+			winrt::Windows::Foundation::IInspectable key = winrt::box_value(keyStr);
+			if (resource.HasKey(key)) {
+				winrt::Win2dTextReader::AppTheme theme = resource.Lookup(key).as<winrt::Win2dTextReader::AppTheme>();
+				m_themeItems.Append(theme);
+			}
+			else {
+				break;
+			}
+			++i;
 		}
 	}
 

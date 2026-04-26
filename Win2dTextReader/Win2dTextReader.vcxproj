@@ -121,6 +121,7 @@
     <Manifest Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppTheme.h" />
     <ClInclude Include="BookContents.xaml.h">
       <DependentUpon>BookContents.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -135,11 +136,11 @@
     <ClInclude Include="MainWindow.xaml.h">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClInclude>
-    <ClInclude Include="ReaderTheme.h" />
     <ClInclude Include="Settings.xaml.h">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
+    <ClInclude Include="WinrtTypeName.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -150,25 +151,10 @@
     <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\BackgroundBrushes.xaml" />
-    <Page Include="Themes\Dark.xaml">
-      <DeploymentContent>true</DeploymentContent>
-    </Page>
-    <Page Include="Themes\FontColors.xaml" />
-    <Page Include="Themes\Foreset.xaml">
-      <DeploymentContent>true</DeploymentContent>
-    </Page>
-    <Page Include="Themes\Ocean.xaml">
-      <DeploymentContent>true</DeploymentContent>
-    </Page>
-    <Page Include="Themes\Sakura.xaml">
-      <DeploymentContent>true</DeploymentContent>
-    </Page>
-    <Page Include="Themes\SistersSoft.xaml">
-      <DeploymentContent>true</DeploymentContent>
-    </Page>
+    <Page Include="Themes\Themes.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppTheme.cpp" />
     <ClCompile Include="BookContents.xaml.cpp">
       <DependentUpon>BookContents.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -186,13 +172,13 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
-    <ClCompile Include="ReaderTheme.cpp" />
     <ClCompile Include="Settings.xaml.cpp">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Midl Include="AppTheme.idl" />
     <Midl Include="BookContents.idl">
       <DependentUpon>BookContents.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -205,7 +191,6 @@
       <SubType>Code</SubType>
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Midl>
-    <Midl Include="ReaderTheme.idl" />
     <Midl Include="Settings.idl">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>

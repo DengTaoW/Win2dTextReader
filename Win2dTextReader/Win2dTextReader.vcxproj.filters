@@ -17,7 +17,7 @@
     <Midl Include="DoubleItem.idl">
       <Filter>Components</Filter>
     </Midl>
-    <Midl Include="ThemeItem.idl">
+    <Midl Include="AppTheme.idl">
       <Filter>Components</Filter>
     </Midl>
   </ItemGroup>
@@ -37,7 +37,7 @@
     <ClCompile Include="DoubleItem.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="ThemeItem.cpp">
+    <ClCompile Include="AppTheme.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -242,7 +242,10 @@
     <ClInclude Include="DoubleItem.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="ThemeItem.h">
+    <ClInclude Include="AppTheme.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="WinrtTypeName.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -272,19 +275,7 @@
     <Page Include="Settings.xaml">
       <Filter>Views</Filter>
     </Page>
-    <Page Include="Themes\SistersSoft.xaml">
-      <Filter>Themes</Filter>
-    </Page>
-    <Page Include="Themes\Dark.xaml">
-      <Filter>Themes</Filter>
-    </Page>
-    <Page Include="Themes\Sakura.xaml">
-      <Filter>Themes</Filter>
-    </Page>
-    <Page Include="Themes\Foreset.xaml">
-      <Filter>Themes</Filter>
-    </Page>
-    <Page Include="Themes\Ocean.xaml">
+    <Page Include="Themes\Themes.xaml">
       <Filter>Themes</Filter>
     </Page>
   </ItemGroup>
