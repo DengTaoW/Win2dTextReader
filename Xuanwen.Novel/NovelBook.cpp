@@ -148,11 +148,27 @@ namespace winrt::Xuanwen::Novel::implementation
             return false; 
         }
         else if (line.length() <= 12) {
-            return std::regex_search(line.begin(), line.end(), TITLE_REGEX); 
+            return std::regex_search(line.begin(), line.end(), TITLE_REGEX,); 
         }
         else {
             return std::regex_search(line.begin(), line.begin() + 12, TITLE_REGEX); 
         }
+    }
+
+    bool NovelBook::IsTitle(std::wstring_view line, std::wstring& matchedText)
+    {
+        if (line.length() <= 2)
+            return false; 
+        
+        size_t length = line.size() >= 12ul ? 12ul : line.size(); 
+        std::wstring text{ line.substr(0, length) };
+        std::wsmatch matches; 
+        
+        bool isFound = std::regex_search(text, matches, TITLE_REGEX);
+        if (isFound) {
+            matchedText = matches[0].str();
+        }
+        return isFound; 
     }
 
     bool NovelBook::IsEmpty(std::wstring_view text)

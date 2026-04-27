@@ -19,6 +19,7 @@ namespace winrt::Xuanwen::Novel::implementation
         static std::string DetectCharsetName(const char* data, size_t sampleSize); 
         static winrt::hstring DecodeBytesArray(const char* data, size_t dataLength); 
         static bool IsTitle(std::wstring_view line); 
+        static bool IsTitle(std::wstring_view line, std::wstring& matchedText); 
         static bool IsEmpty(std::wstring_view text); 
 
         static bool IsUtf16LE(const char* data, size_t sampleSize); 

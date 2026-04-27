@@ -14,19 +14,24 @@ namespace winrt::Xuanwen::Novel::implementation
         if (!m_title.empty())
             return m_title; 
 
-        constexpr wchar_t FIRST_TITLE[] { L"前言" }; 
+        if (m_text.empty())
+            return L"内容为空的章"; 
+
         std::wstring_view textView{ m_text }; 
         
         size_t lineEnd = textView.find_first_of(L'\n', 0); 
         if (lineEnd == std::wstring_view::npos) {
-            m_title = winrt::hstring{ FIRST_TITLE }; 
+            size_t length = textView.size() > 12ul ? 12ul : textView.size(); 
+            return winrt::hstring{ textView.substr(0, length) };
         }
         else {
             std::wstring result{ textView.substr(0, lineEnd) };
             if (result.back() == L'\r')
                 result.pop_back();
+
             m_title = winrt::hstring{ result }; 
         }
+
         return m_title; 
     }
 
