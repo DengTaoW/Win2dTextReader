@@ -21,6 +21,8 @@ namespace winrt::Win2dTextReader::implementation
         hstring Name();
         void Name(hstring const& value);
 
+        hstring ToString(); 
+
     private: 
         static winrt::Microsoft::UI::Xaml::DependencyProperty s_backgroundProperty;
         static winrt::Microsoft::UI::Xaml::DependencyProperty s_foregroundProperty; 

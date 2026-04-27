@@ -1,7 +1,8 @@
 namespace Win2dTextReader
 {
+	[bindable]
 	[default_interface]
-	runtimeclass AppTheme : Microsoft.UI.Xaml.DependencyObject
+	runtimeclass AppTheme : Microsoft.UI.Xaml.DependencyObject, Windows.Foundation.IStringable
 	{
 		AppTheme(); 
 		

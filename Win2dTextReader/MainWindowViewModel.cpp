@@ -289,8 +289,8 @@ namespace winrt::Win2dTextReader::implementation
 
 	winrt::Win2dTextReader::AppTheme MainWindowViewModel::AppTheme() const
 	{
-		return m_themeItems.GetAt(m_themeIndex); 
-
+		winrt::Windows::Foundation::IInspectable object = m_themeItems.GetAt(m_themeIndex); 
+		return object.as<winrt::Win2dTextReader::AppTheme>(); 
 	}
 
 	int32_t MainWindowViewModel::ThemeIndex() const
@@ -308,7 +308,7 @@ namespace winrt::Win2dTextReader::implementation
 		this->NotifyPropertyChanged(L"AppTheme"); 
 	}
 
-	winrt::Windows::Foundation::Collections::IObservableVector<winrt::Win2dTextReader::AppTheme> MainWindowViewModel::ThemeItems()
+	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::AppTheme> MainWindowViewModel::ThemeItems()
 	{
 		return m_themeItems;
 	}
@@ -358,19 +358,14 @@ namespace winrt::Win2dTextReader::implementation
 		}
 
 		auto resource = winrt::Microsoft::UI::Xaml::Application::Current().Resources();
-		int32_t i = 0;
-		while (true) {
-			winrt::hstring keyStr = L"Theme_" + winrt::to_hstring(i);
-			winrt::Windows::Foundation::IInspectable key = winrt::box_value(keyStr);
-			if (resource.HasKey(key)) {
-				winrt::Win2dTextReader::AppTheme theme = resource.Lookup(key).as<winrt::Win2dTextReader::AppTheme>();
-				m_themeItems.Append(theme);
-			}
-			else {
-				break;
-			}
-			++i;
+		auto themes = resource.Lookup(winrt::box_value(L"Themes"))
+			.as<winrt::Microsoft::UI::Xaml::DependencyObjectCollection>(); 
+
+		for (uint32_t i = 0; i < themes.Size(); ++i) {
+			auto item = themes.GetAt(i); 
+			m_themeItems.Append(item.as<winrt::Win2dTextReader::AppTheme>()); 
 		}
+
 	}
 
 	void MainWindowViewModel::SetDefaultValues()

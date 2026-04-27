@@ -15,6 +15,5 @@ namespace winrt::Win2dTextReader::implementation
 
     private:
         winrt::Microsoft::UI::Xaml::Window m_window{ nullptr };
-        winrt::Win2dTextReader::AppTheme m_them1{ nullptr };
     };
 }

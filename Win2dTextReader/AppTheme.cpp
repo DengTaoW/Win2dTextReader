@@ -53,9 +53,14 @@ namespace winrt::Win2dTextReader::implementation
 
     winrt::Microsoft::UI::Xaml::Media::Brush AppTheme::Background()
     {
+        if (s_backgroundProperty == nullptr) {
+            s_backgroundProperty = AppTheme::BackgroundProperty();
+        }
+
         winrt::Windows::Foundation::IInspectable object = this->GetValue(s_backgroundProperty); 
         return object.as<winrt::Microsoft::UI::Xaml::Media::Brush>(); 
     }
+
     void AppTheme::Background(winrt::Microsoft::UI::Xaml::Media::Brush const& value)
     {
         if (s_backgroundProperty == nullptr) {
@@ -66,9 +71,14 @@ namespace winrt::Win2dTextReader::implementation
 
     winrt::Microsoft::UI::Xaml::Media::Brush AppTheme::Foreground()
     {
+        if (s_foregroundProperty == nullptr) {
+            s_foregroundProperty = AppTheme::ForegroundProperty();
+        }
+
         winrt::Windows::Foundation::IInspectable object = this->GetValue(s_foregroundProperty); 
         return object.as<winrt::Microsoft::UI::Xaml::Media::Brush>(); 
     }
+
     void AppTheme::Foreground(winrt::Microsoft::UI::Xaml::Media::Brush const& value)
     {
         if (s_foregroundProperty == nullptr) {
@@ -79,9 +89,14 @@ namespace winrt::Win2dTextReader::implementation
 
     hstring AppTheme::Name()
     {
+        if (s_nameProperty == nullptr) {
+            s_nameProperty = AppTheme::NameProperty();
+        }
+
         winrt::Windows::Foundation::IInspectable object = this->GetValue(s_nameProperty); 
         return winrt::unbox_value<winrt::hstring>(object); 
     }
+
     void AppTheme::Name(hstring const& value)
     {
         if (s_nameProperty == nullptr) {
@@ -89,5 +104,10 @@ namespace winrt::Win2dTextReader::implementation
         }
 
         this->SetValue(s_nameProperty, winrt::box_value(value)); 
+    }
+
+    hstring AppTheme::ToString()
+    {
+        return this->Name(); 
     }
 }

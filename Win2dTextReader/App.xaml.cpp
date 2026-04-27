@@ -16,10 +16,6 @@ namespace winrt::Win2dTextReader::implementation
     void App::InitializeComponent()
     {
         AppT::InitializeComponent(); 
-        m_them1 = winrt::Win2dTextReader::AppTheme{}; 
-        m_them1.Name(L""); 
-        m_them1.Background(winrt::Microsoft::UI::Xaml::Media::SolidColorBrush(winrt::Windows::UI::Colors::Black())); 
-        m_them1.Foreground(winrt::Microsoft::UI::Xaml::Media::SolidColorBrush(winrt::Windows::UI::Colors::White()));
     }
 
     void App::OnLaunched(winrt::Microsoft::UI::Xaml::LaunchActivatedEventArgs const&)

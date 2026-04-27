@@ -36,6 +36,6 @@ namespace Win2dTextReader
 		Windows.Foundation.Collections.IVector<FontItem> FontItems { get; }; 
 		Windows.Foundation.Collections.IVector<DoubleItem> FontSizeItems{ get; }; 
 		Windows.Foundation.Collections.IVector<DoubleItem> LineHeightItems{ get; };
-		Windows.Foundation.Collections.IObservableVector<AppTheme> ThemeItems{ get; };
+		Windows.Foundation.Collections.IVector<AppTheme> ThemeItems{ get; };
 	}
 }
