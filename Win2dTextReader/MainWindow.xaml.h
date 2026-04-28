@@ -13,6 +13,10 @@ namespace winrt::Win2dTextReader::implementation
 		winrt::event< winrt::Win2dTextReader::ObjectAction> m_chaptersChanged; 
 		uint64_t m_chaptersCounter{ 0 }; 
 
+		winrt::event_token m_viewModelPropertyChangedToken;
+		winrt::event_token m_appWindowChangedToken; 
+		winrt::event_token m_chaptersChangedToken;
+
 	public:
 		MainWindow();
 		void InitializeComponent();

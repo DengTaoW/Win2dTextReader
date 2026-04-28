@@ -37,13 +37,14 @@
                         ViewChanged="ContentScrollView_ViewChanged"
                         VerticalScrollMode="Auto">
                 <TextBlock x:Name="ChapterContentTextBlock"
+                           LineStackingStrategy="BlockLineHeight"
+                           IsTextSelectionEnabled="False"
                            FontWeight="{x:Bind ViewModel.FontWeight, Mode=OneWay}"
                            FontFamily="{x:Bind ViewModel.FontFamily, Mode=OneWay}"
                            LineHeight="{x:Bind ViewModel.LineHeight, Mode=OneWay}"
                            FontSize="{x:Bind ViewModel.FontSize, Mode=OneWay}"
                            Text="{x:Bind ViewModel.CurrentChapter.Text, Mode=OneWay}"
                            Foreground="{x:Bind ViewModel.AppTheme.Foreground, Mode=OneWay}"
-                           LineStackingStrategy="BlockLineHeight"
                            TextWrapping="Wrap" />
 
                 <ScrollView.ContextFlyout>

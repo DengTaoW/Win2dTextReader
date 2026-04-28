@@ -10,8 +10,8 @@ namespace winrt::Win2dTextReader::implementation
 	MainWindow::MainWindow()
 	{
 		m_viewModel = winrt::Win2dTextReader::MainWindowViewModel(); 
-		this->ChaptersChanged({&m_viewModel , &MainWindowViewModel::OnChaptersChanged });
-		m_viewModel.PropertyChanged({ this, &MainWindow::OnViewModelPropertyChanged }); 
+		m_chaptersChangedToken = this->ChaptersChanged({&m_viewModel , &MainWindowViewModel::OnChaptersChanged });
+		m_viewModelPropertyChangedToken = m_viewModel.PropertyChanged({ this, &MainWindow::OnViewModelPropertyChanged });
 	}
 
 	void MainWindow::InitializeComponent()
@@ -23,16 +23,15 @@ namespace winrt::Win2dTextReader::implementation
 		presenter.IsMinimizable(false);
 		presenter.IsMaximizable(false);
 		this->AppWindow().SetPresenter(presenter); 
-		this->AppWindow().Changed({ this, &MainWindow::OnWindowPropertyChanged });
 		this->ExtendsContentIntoTitleBar(true);
 
+		m_appWindowChangedToken = this->AppWindow().Changed({ this, &MainWindow::OnWindowPropertyChanged });
 
 		m_bookContentsControl = winrt::Win2dTextReader::BookContents(m_viewModel); 
 		m_settingsControl = winrt::Win2dTextReader::Settings(m_viewModel);
 
 		this->ContentsPopup().Child(m_bookContentsControl);
 		this->SettingsPopup().Child(m_settingsControl);
-
 		this->LoadHistoryAsync(); 
 	}
 
@@ -165,6 +164,10 @@ namespace winrt::Win2dTextReader::implementation
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::WindowEventArgs const&)
 	{
 		m_viewModel.SaveData(); 
+
+		m_viewModel.PropertyChanged(m_viewModelPropertyChangedToken); 
+		this->ChaptersChanged(m_chaptersChangedToken); 
+		this->AppWindow().Changed(m_appWindowChangedToken); 
 	}
 
 	void MainWindow::ContentScrollView_ViewChanged(
