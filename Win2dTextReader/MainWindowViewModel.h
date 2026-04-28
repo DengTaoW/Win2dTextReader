@@ -46,21 +46,26 @@ namespace winrt::Win2dTextReader::implementation
         void LineHeightIndex(int32_t value); 
 
         winrt::Microsoft::UI::Xaml::Media::FontFamily FontFamily();
-        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::FontItem> FontItems(); 
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::AppFont> FontItems(); 
         int32_t FontFamilyIndex() const; 
         void FontFamilyIndex(int32_t value); 
 
         winrt::Win2dTextReader::AppTheme AppTheme() const; 
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::AppTheme> ThemeItems();
         int32_t ThemeIndex() const; 
         void ThemeIndex(int32_t value); 
-        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::AppTheme> ThemeItems();
+
+        winrt::Windows::UI::Text::FontWeight FontWeight() const; 
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::FontWeightItem> FontWeightItems(); 
+        int32_t FontWeightIndex() const; 
+        void FontWeightIndex(int32_t value); 
+        
 
         winrt::event_token PropertyChanged(winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler);
         void PropertyChanged(winrt::event_token const& token) noexcept;
 
     private: 
         void NotifyPropertyChanged(std::wstring_view name); 
-        void InitializeCollections(); 
         void SetDefaultValues();
 
         int32_t m_chapterIndex{ 0 }; 
@@ -72,6 +77,7 @@ namespace winrt::Win2dTextReader::implementation
         int32_t m_lineHeightIndex{ 0 };
         int32_t m_fontFamilyIndex{ 0 };
         int32_t m_themeIndex{ 0 }; 
+        int32_t m_fontWeightIndex{ 0 }; 
 
         double m_readerVerticalOffset{ 0 }; 
 
@@ -82,10 +88,11 @@ namespace winrt::Win2dTextReader::implementation
 
         winrt::Xuanwen::Novel::NovelBook m_currentBook{ nullptr }; 
         winrt::event<winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> m_propertyChanged; 
-        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::FontItem> m_fontItems{ nullptr }; 
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::AppFont> m_fontItems{ nullptr }; 
         winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::DoubleItem> m_fontSizeItems{ nullptr }; 
         winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::DoubleItem> m_lineHeightItems{ nullptr }; 
         winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::AppTheme> m_themeItems{ nullptr };
+        winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::FontWeightItem> m_fontWeightItems{ nullptr };
         winrt::Windows::Foundation::Collections::IPropertySet m_localSettings{ nullptr }; 
         
     };

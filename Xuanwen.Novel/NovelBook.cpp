@@ -148,7 +148,7 @@ namespace winrt::Xuanwen::Novel::implementation
             return false; 
         }
         else if (line.length() <= 12) {
-            return std::regex_search(line.begin(), line.end(), TITLE_REGEX,); 
+            return std::regex_search(line.begin(), line.end(), TITLE_REGEX); 
         }
         else {
             return std::regex_search(line.begin(), line.begin() + 12, TITLE_REGEX); 

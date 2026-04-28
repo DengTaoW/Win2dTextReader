@@ -60,7 +60,7 @@ namespace winrt::Win2dTextReader::implementation
 	}
 
 
-	winrt::Windows::Foundation::Numerics::float4 MainWindow::GetPopupRegion(float wScale, float hScale)
+	winrt::Windows::Foundation::Rect MainWindow::GetPopupRegion(float wScale, float hScale)
 	{
 		winrt::Windows::Foundation::Numerics::float2 readerSize = this->ReaderRegion().ActualSize(); 
 		float width = readerSize.x * wScale; 
@@ -70,14 +70,13 @@ namespace winrt::Win2dTextReader::implementation
 			width = readerSize.x - 40.0f; 
 		}
 		
-		if (width > 800.0f) {
-			width = 800.0f; 
+		if (width > 700.0f) {
+			width = 700.0f; 
 		}
+		float x = (readerSize.x - width) / 2.0f; 
+		float y = readerSize.y - height - 10.0f;
 
-		float left = (readerSize.x - width) / 2.0f; 
-		float top = readerSize.y - height - 20.0f;;
-
-		return { left, top, width, height };
+		return { x, y, width, height };
 	}
 
 	void MainWindow::OnWindowPropertyChanged(
@@ -138,26 +137,26 @@ namespace winrt::Win2dTextReader::implementation
 	void MainWindow::ShowContents(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		auto region = this->GetPopupRegion(0.6f, 0.8f);
+		auto rect = this->GetPopupRegion(0.6f, 0.8f);
 
-		m_bookContentsControl.Height(region.w); 
-		m_bookContentsControl.Width(region.z);
+		m_bookContentsControl.Width(rect.Width);
+		m_bookContentsControl.Height(rect.Height); 
 
-		this->ContentsPopup().HorizontalOffset(region.x); 
-		this->ContentsPopup().VerticalOffset(region.y); 
+		this->ContentsPopup().HorizontalOffset(rect.X); 
+		this->ContentsPopup().VerticalOffset(rect.Y); 
 		this->ContentsPopup().IsOpen(true);
 	}
 
 	void MainWindow::ShowSettings(
 		winrt::Windows::Foundation::IInspectable const&, winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
 	{
-		auto region = this->GetPopupRegion(0.6f, 0.6f);
+		auto rect = this->GetPopupRegion(0.6f, 0.6f);
 
-		m_settingsControl.Height(region.w);
-		m_settingsControl.Width(region.z);
+		m_settingsControl.Width(rect.Width);
+		m_settingsControl.Height(rect.Height);
 
-		this->SettingsPopup().HorizontalOffset(region.x);
-		this->SettingsPopup().VerticalOffset(region.y);
+		this->SettingsPopup().HorizontalOffset(rect.X);
+		this->SettingsPopup().VerticalOffset(rect.Y);
 		this->SettingsPopup().IsOpen(true);
 	}
 

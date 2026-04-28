@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Win2dTextReader">
+
+    <DependencyObjectCollection x:Key="Fonts">
+        <local:AppFont Name="宋体" FontFamily="SimSun" />
+        <local:AppFont Name="楷体" FontFamily="KaiTi" />
+        <local:AppFont Name="等线" FontFamily="DengXian" />
+        <local:AppFont Name="中黑" FontFamily="SimHei" />
+        <local:AppFont Name="雅黑" FontFamily="Microsoft YeHei" />
+    </DependencyObjectCollection>
+    
+</ResourceDictionary>

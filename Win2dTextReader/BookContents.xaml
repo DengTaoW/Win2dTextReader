@@ -11,8 +11,8 @@
     mc:Ignorable="d">
 
     <Border Padding="20" 
-            CornerRadius="{StaticResource OverlayCornerRadius}" 
             BorderThickness="1"
+            CornerRadius="{StaticResource OverlayCornerRadius}" 
             BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
             Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
 

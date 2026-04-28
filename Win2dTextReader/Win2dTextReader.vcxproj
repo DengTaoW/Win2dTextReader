@@ -121,13 +121,15 @@
     <Manifest Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppFont.h" />
+    <ClInclude Include="AppResource.h" />
     <ClInclude Include="AppTheme.h" />
     <ClInclude Include="BookContents.xaml.h">
       <DependentUpon>BookContents.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClInclude>
     <ClInclude Include="DoubleItem.h" />
-    <ClInclude Include="FontItem.h" />
+    <ClInclude Include="FontWeightItem.h" />
     <ClInclude Include="MainWindowViewModel.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.xaml.h">
@@ -151,16 +153,19 @@
     <Page Include="Settings.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Themes\Fonts.xaml" />
     <Page Include="Themes\Themes.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AppFont.cpp" />
+    <ClCompile Include="AppResource.cpp" />
     <ClCompile Include="AppTheme.cpp" />
     <ClCompile Include="BookContents.xaml.cpp">
       <DependentUpon>BookContents.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
     <ClCompile Include="DoubleItem.cpp" />
-    <ClCompile Include="FontItem.cpp" />
+    <ClCompile Include="FontWeightItem.cpp" />
     <ClCompile Include="MainWindowViewModel.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -178,6 +183,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Midl Include="AppFont.idl" />
     <Midl Include="AppTheme.idl" />
     <Midl Include="BookContents.idl">
       <DependentUpon>BookContents.xaml</DependentUpon>
@@ -185,7 +191,7 @@
     </Midl>
     <Midl Include="Delegates.idl" />
     <Midl Include="DoubleItem.idl" />
-    <Midl Include="FontItem.idl" />
+    <Midl Include="FontWeightItem.idl" />
     <Midl Include="MainWindowViewModel.idl" />
     <Midl Include="MainWindow.idl">
       <SubType>Code</SubType>
@@ -263,6 +269,7 @@
     the Windows App SDK Nuget package has not yet been restored.
   -->
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="packages.config" />
     <None Include="Win2dTextReader_TemporaryKey.pfx" />
   </ItemGroup>

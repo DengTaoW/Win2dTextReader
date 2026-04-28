@@ -11,13 +11,16 @@
     <Midl Include="MainWindowViewModel.idl">
       <Filter>ViewModels</Filter>
     </Midl>
-    <Midl Include="FontItem.idl">
-      <Filter>Components</Filter>
-    </Midl>
     <Midl Include="DoubleItem.idl">
       <Filter>Components</Filter>
     </Midl>
     <Midl Include="AppTheme.idl">
+      <Filter>Components</Filter>
+    </Midl>
+    <Midl Include="AppFont.idl">
+      <Filter>Components</Filter>
+    </Midl>
+    <Midl Include="FontWeightItem.idl">
       <Filter>Components</Filter>
     </Midl>
   </ItemGroup>
@@ -31,13 +34,17 @@
     <ClCompile Include="MainWindowViewModel.cpp">
       <Filter>ViewModels</Filter>
     </ClCompile>
-    <ClCompile Include="FontItem.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="DoubleItem.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="AppTheme.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="AppFont.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="AppResource.cpp" />
+    <ClCompile Include="FontWeightItem.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -236,9 +243,6 @@
     <ClInclude Include="MainWindowViewModel.h">
       <Filter>ViewModels</Filter>
     </ClInclude>
-    <ClInclude Include="FontItem.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="DoubleItem.h">
       <Filter>Components</Filter>
     </ClInclude>
@@ -246,6 +250,13 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="WinrtTypeName.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AppFont.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AppResource.h" />
+    <ClInclude Include="FontWeightItem.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -264,6 +275,7 @@
     <None Include="Win2dTextReader_TemporaryKey.pfx">
       <Filter>Packages</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="MainWindow.xaml">
@@ -276,6 +288,9 @@
       <Filter>Views</Filter>
     </Page>
     <Page Include="Themes\Themes.xaml">
+      <Filter>Themes</Filter>
+    </Page>
+    <Page Include="Themes\Fonts.xaml">
       <Filter>Themes</Filter>
     </Page>
   </ItemGroup>

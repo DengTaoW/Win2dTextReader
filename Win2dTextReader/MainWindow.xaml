@@ -37,6 +37,7 @@
                         ViewChanged="ContentScrollView_ViewChanged"
                         VerticalScrollMode="Auto">
                 <TextBlock x:Name="ChapterContentTextBlock"
+                           FontWeight="{x:Bind ViewModel.FontWeight, Mode=OneWay}"
                            FontFamily="{x:Bind ViewModel.FontFamily, Mode=OneWay}"
                            LineHeight="{x:Bind ViewModel.LineHeight, Mode=OneWay}"
                            FontSize="{x:Bind ViewModel.FontSize, Mode=OneWay}"

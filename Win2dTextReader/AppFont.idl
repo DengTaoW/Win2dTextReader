@@ -1,0 +1,14 @@
+namespace Win2dTextReader
+{
+	[bindable]
+	[default_interface]
+	runtimeclass AppFont : Microsoft.UI.Xaml.DependencyObject
+	{
+		AppFont(); 
+		static Microsoft.UI.Xaml.DependencyProperty NameProperty{ get; };
+		String Name;
+
+		static Microsoft.UI.Xaml.DependencyProperty FontFamilyProperty { get; };
+		Microsoft.UI.Xaml.Media.FontFamily FontFamily;
+	}
+}

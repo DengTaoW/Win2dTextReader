@@ -19,7 +19,7 @@ namespace winrt::Win2dTextReader::implementation
 		winrt::fire_and_forget LoadHistoryAsync(); 
 
 		winrt::Win2dTextReader::MainWindowViewModel ViewModel(); 
-		winrt::Windows::Foundation::Numerics::float4 GetPopupRegion(float wScale, float hScale); 
+		winrt::Windows::Foundation::Rect GetPopupRegion(float wScale, float hScale); 
 		void OnWindowPropertyChanged(winrt::Microsoft::UI::Windowing::AppWindow const& appwindow, winrt::Microsoft::UI::Windowing::AppWindowChangedEventArgs const args);
 
 		winrt::fire_and_forget OnOpenButtonClicked(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);

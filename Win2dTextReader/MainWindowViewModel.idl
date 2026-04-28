@@ -1,6 +1,7 @@
-import "FontItem.idl"; 
 import "DoubleItem.idl"; 
 import "AppTheme.idl"; 
+import "AppFont.idl"; 
+import "FontWeightItem.idl"; 
 
 namespace Win2dTextReader
 {
@@ -18,6 +19,7 @@ namespace Win2dTextReader
 		Int32 FontSizeIndex;
 		Int32 FontFamilyIndex;
 		Int32 ThemeIndex; 
+		Int32 FontWeightIndex; 
 
 		Int32 WindowPositionX; 
 		Int32 WindowPositionY; 
@@ -32,10 +34,13 @@ namespace Win2dTextReader
 		Double FontSize{ get; }; 
 		Microsoft.UI.Xaml.Media.FontFamily FontFamily{ get; }; 
 		AppTheme AppTheme{ get; }; 
+		Windows.UI.Text.FontWeight FontWeight{ get; }; 
 
-		Windows.Foundation.Collections.IVector<FontItem> FontItems { get; }; 
+		Windows.Foundation.Collections.IVector<AppFont> FontItems { get; };
 		Windows.Foundation.Collections.IVector<DoubleItem> FontSizeItems{ get; }; 
 		Windows.Foundation.Collections.IVector<DoubleItem> LineHeightItems{ get; };
 		Windows.Foundation.Collections.IVector<AppTheme> ThemeItems{ get; };
+		Windows.Foundation.Collections.IVector<FontWeightItem> FontWeightItems{ get; };
+		
 	}
 }

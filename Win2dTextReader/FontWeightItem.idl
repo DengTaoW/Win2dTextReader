@@ -1,0 +1,10 @@
+namespace Win2dTextReader
+{
+	[default_interface]
+	runtimeclass FontWeightItem
+	{
+		FontWeightItem(String name, Windows.UI.Text.FontWeight fontWeight); 
+		String Name{ get; }; 
+		Windows.UI.Text.FontWeight FontWeight{ get; }; 
+	}
+}

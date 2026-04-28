@@ -15,7 +15,7 @@ namespace winrt::Win2dTextReader::implementation
             s_backgroundProperty = winrt::Microsoft::UI::Xaml::DependencyProperty::Register(
                 L"Background",
                 winrt::helper::GetTypeName<winrt::Microsoft::UI::Xaml::Media::Brush>(),
-                winrt::xaml_typename<winrt::Win2dTextReader::AppTheme>(),
+                winrt::helper::GetTypeName<winrt::Win2dTextReader::AppTheme>(),
                 winrt::Microsoft::UI::Xaml::PropertyMetadata(winrt::Microsoft::UI::Xaml::Media::SolidColorBrush(winrt::Windows::UI::Colors::Black()))
             );
         }
@@ -29,7 +29,7 @@ namespace winrt::Win2dTextReader::implementation
             s_foregroundProperty = winrt::Microsoft::UI::Xaml::DependencyProperty::Register(
                 L"Foreground",
                 winrt::helper::GetTypeName<winrt::Microsoft::UI::Xaml::Media::Brush>(),
-                winrt::xaml_typename<winrt::Win2dTextReader::AppTheme>(),
+                winrt::helper::GetTypeName<winrt::Win2dTextReader::AppTheme>(),
                 winrt::Microsoft::UI::Xaml::PropertyMetadata(winrt::Microsoft::UI::Xaml::Media::SolidColorBrush(winrt::Windows::UI::Colors::White()))
             );
         }
@@ -43,7 +43,7 @@ namespace winrt::Win2dTextReader::implementation
             s_nameProperty = winrt::Microsoft::UI::Xaml::DependencyProperty::Register(
                 L"Name",
                 winrt::helper::GetTypeName<winrt::hstring>(),
-                winrt::xaml_typename<winrt::Win2dTextReader::AppTheme>(),
+                winrt::helper::GetTypeName<winrt::Win2dTextReader::AppTheme>(),
                 winrt::Microsoft::UI::Xaml::PropertyMetadata(winrt::box_value(L"Unknown"))
             ); 
         }
@@ -53,61 +53,34 @@ namespace winrt::Win2dTextReader::implementation
 
     winrt::Microsoft::UI::Xaml::Media::Brush AppTheme::Background()
     {
-        if (s_backgroundProperty == nullptr) {
-            s_backgroundProperty = AppTheme::BackgroundProperty();
-        }
-
-        winrt::Windows::Foundation::IInspectable object = this->GetValue(s_backgroundProperty); 
+        winrt::Windows::Foundation::IInspectable object = this->GetValue(AppTheme::BackgroundProperty());
         return object.as<winrt::Microsoft::UI::Xaml::Media::Brush>(); 
     }
 
     void AppTheme::Background(winrt::Microsoft::UI::Xaml::Media::Brush const& value)
     {
-        if (s_backgroundProperty == nullptr) {
-            s_backgroundProperty = AppTheme::BackgroundProperty(); 
-        }
-        this->SetValue(s_backgroundProperty, value); 
+        this->SetValue(AppTheme::BackgroundProperty(), value);
     }
 
     winrt::Microsoft::UI::Xaml::Media::Brush AppTheme::Foreground()
     {
-        if (s_foregroundProperty == nullptr) {
-            s_foregroundProperty = AppTheme::ForegroundProperty();
-        }
-
-        winrt::Windows::Foundation::IInspectable object = this->GetValue(s_foregroundProperty); 
+        winrt::Windows::Foundation::IInspectable object = this->GetValue(AppTheme::ForegroundProperty());
         return object.as<winrt::Microsoft::UI::Xaml::Media::Brush>(); 
     }
 
     void AppTheme::Foreground(winrt::Microsoft::UI::Xaml::Media::Brush const& value)
     {
-        if (s_foregroundProperty == nullptr) {
-            s_foregroundProperty = AppTheme::ForegroundProperty();
-        }
-        this->SetValue(s_foregroundProperty, value); 
+        this->SetValue(AppTheme::ForegroundProperty(), value);
     }
 
     hstring AppTheme::Name()
     {
-        if (s_nameProperty == nullptr) {
-            s_nameProperty = AppTheme::NameProperty();
-        }
-
-        winrt::Windows::Foundation::IInspectable object = this->GetValue(s_nameProperty); 
+        winrt::Windows::Foundation::IInspectable object = this->GetValue(AppTheme::NameProperty());
         return winrt::unbox_value<winrt::hstring>(object); 
     }
 
     void AppTheme::Name(hstring const& value)
     {
-        if (s_nameProperty == nullptr) {
-            s_nameProperty = AppTheme::NameProperty(); 
-        }
-
-        this->SetValue(s_nameProperty, winrt::box_value(value)); 
-    }
-
-    hstring AppTheme::ToString()
-    {
-        return this->Name(); 
+        this->SetValue(AppTheme::NameProperty(), winrt::box_value(value));
     }
 }

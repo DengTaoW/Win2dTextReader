@@ -6,14 +6,14 @@ namespace winrt::helper // 换个专属小窝，避免冲突
 {
     // 基础约束
     template<typename T>
-    concept WinrtType = std::is_base_of_v<winrt::Windows::Foundation::IInspectable, T>;
+    concept WinrtObject = std::is_base_of_v<winrt::Windows::Foundation::IInspectable, T>;
 
     // 原始模板声明
     template<typename T>
     winrt::Windows::UI::Xaml::Interop::TypeName GetTypeName();
 
     // 针对 WinRT 类型的实现 (使用 decay_t 增加鲁棒性)
-    template<WinrtType T>
+    template<WinrtObject T>
     winrt::Windows::UI::Xaml::Interop::TypeName GetTypeName()
     {
         return winrt::xaml_typename<T>();
@@ -26,10 +26,13 @@ namespace winrt::helper // 换个专属小窝，避免冲突
         return { L#WinrtName, winrt::Windows::UI::Xaml::Interop::TypeKind::Primitive }; \
     }
 
-    REGISTER_PRIMITIVE_TYPE(uint8_t, UInt8)
     REGISTER_PRIMITIVE_TYPE(int16_t, Int16)
     REGISTER_PRIMITIVE_TYPE(int32_t, Int32)
     REGISTER_PRIMITIVE_TYPE(int64_t, Int64)
+    REGISTER_PRIMITIVE_TYPE(uint8_t, UInt8)
+    REGISTER_PRIMITIVE_TYPE(uint16_t, UInt16)
+    REGISTER_PRIMITIVE_TYPE(uint32_t, UInt32)
+    REGISTER_PRIMITIVE_TYPE(uint64_t, UInt64)
     REGISTER_PRIMITIVE_TYPE(float, Single)
     REGISTER_PRIMITIVE_TYPE(double, Double)
     REGISTER_PRIMITIVE_TYPE(bool, Boolean)

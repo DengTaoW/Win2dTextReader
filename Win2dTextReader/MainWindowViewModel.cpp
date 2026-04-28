@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "MainWindowViewModel.h"
 #include "MainWindowViewModel.g.cpp"
+#include "AppResource.h"
 
 
 namespace winrt::Win2dTextReader::implementation
@@ -13,12 +14,11 @@ namespace winrt::Win2dTextReader::implementation
 
 	MainWindowViewModel::MainWindowViewModel()
 	{
-		m_fontItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::FontItem>();
-		m_lineHeightItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::DoubleItem>(); 
-		m_fontSizeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::DoubleItem>(); 
-		m_themeItems = winrt::single_threaded_observable_vector<winrt::Win2dTextReader::AppTheme>(); 
-
-		this->InitializeCollections();
+		m_lineHeightItems = winrt::Win2dTextReader::AppResource::LineHeightValues(); 
+		m_fontSizeItems = winrt::Win2dTextReader::AppResource::FontSizeValues(); 
+		m_fontItems = winrt::Win2dTextReader::AppResource::Fonts(); 
+		m_themeItems = winrt::Win2dTextReader::AppResource::Themes(); 
+		m_fontWeightItems = winrt::Win2dTextReader::AppResource::FontWeightValues(); 
 
 		auto appData = winrt::Microsoft::Windows::Storage::ApplicationData::GetDefault();
 		m_localSettings = appData.LocalSettings().Values();
@@ -48,6 +48,7 @@ namespace winrt::Win2dTextReader::implementation
 			m_fontSizeIndex = int32Values[6]; 
 			m_fontFamilyIndex = int32Values[7]; 
 			m_themeIndex = int32Values[8]; 
+			m_fontWeightIndex = int32Values[9];
 		}
 
 		if (m_localSettings.HasKey(STRING_VALUES)) {
@@ -79,7 +80,8 @@ namespace winrt::Win2dTextReader::implementation
 			m_lineHeightIndex,
 			m_fontSizeIndex,
 			m_fontFamilyIndex,
-			m_themeIndex
+			m_themeIndex,
+			m_fontWeightIndex
 		};
 
 		auto int32ValuesObject = winrt::Windows::Foundation::PropertyValue::CreateInt32Array(int32Values); 
@@ -260,16 +262,17 @@ namespace winrt::Win2dTextReader::implementation
 		if (value != m_fontSizeIndex) {
 			m_fontSizeIndex = value;
 			this->NotifyPropertyChanged(L"FontSize");
+			this->NotifyPropertyChanged(L"LineHeight"); 
 		}
 	}
 
 	winrt::Microsoft::UI::Xaml::Media::FontFamily MainWindowViewModel::FontFamily()
 	{
-		winrt::Win2dTextReader::FontItem item = m_fontItems.GetAt((uint32_t)m_fontFamilyIndex);
+		winrt::Win2dTextReader::AppFont item = m_fontItems.GetAt((uint32_t)m_fontFamilyIndex);
 		return item.FontFamily();
 	}
 
-	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::FontItem> MainWindowViewModel::FontItems()
+	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::AppFont> MainWindowViewModel::FontItems()
 	{
 		return m_fontItems;
 	}
@@ -308,11 +311,34 @@ namespace winrt::Win2dTextReader::implementation
 		this->NotifyPropertyChanged(L"AppTheme"); 
 	}
 
+	winrt::Windows::UI::Text::FontWeight MainWindowViewModel::FontWeight() const
+	{
+		auto item = m_fontWeightItems.GetAt(m_fontWeightIndex); 
+		return item.FontWeight(); 
+	}
+
+	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::FontWeightItem> MainWindowViewModel::FontWeightItems()
+	{
+		return m_fontWeightItems; 
+	}
+
+	int32_t MainWindowViewModel::FontWeightIndex() const
+	{
+		return m_fontWeightIndex; 
+	}
+
+	void MainWindowViewModel::FontWeightIndex(int32_t value)
+	{
+		if (m_fontWeightIndex == value)
+			return; 
+		m_fontWeightIndex = value; 
+		this->NotifyPropertyChanged(L"FontWeight"); 
+	}
+
 	winrt::Windows::Foundation::Collections::IVector<winrt::Win2dTextReader::AppTheme> MainWindowViewModel::ThemeItems()
 	{
 		return m_themeItems;
 	}
-
 
 	winrt::event_token MainWindowViewModel::PropertyChanged(winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler)
 	{
@@ -326,46 +352,6 @@ namespace winrt::Win2dTextReader::implementation
 	void MainWindowViewModel::NotifyPropertyChanged(std::wstring_view name)
 	{
 		m_propertyChanged(*this, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs(name));
-	}
-
-	void MainWindowViewModel::InitializeCollections()
-	{
-		double fontSize = 10.0;
-		for (size_t i = 0; i < 8; i++) {
-			winrt::Win2dTextReader::DoubleItem item(fontSize, 0);
-			m_fontSizeItems.Append(item);
-			fontSize += 2.0; 
-		}
-
-		double lineHeight = 1.2;
-		for (size_t i = 0; i < 7; i++) {
-			winrt::Win2dTextReader::DoubleItem item(lineHeight, 1);
-			m_lineHeightItems.Append(item);
-			lineHeight += 0.2; 
-		}
-
-		std::map<std::wstring, std::wstring> fontNamesDict = {
-			{L"宋体", L"SimSun"},
-			{L"楷体", L"KaiTi"},
-			{L"等线", L"DengXian"},
-			{L"中黑", L"SimHei"},
-			{L"雅黑", L"Microsoft YaHei"}
-		};
-
-		for (const auto& [displayName, fontName] : fontNamesDict) {
-			winrt::Win2dTextReader::FontItem item(fontName, displayName); 
-			m_fontItems.Append(item); 
-		}
-
-		auto resource = winrt::Microsoft::UI::Xaml::Application::Current().Resources();
-		auto themes = resource.Lookup(winrt::box_value(L"Themes"))
-			.as<winrt::Microsoft::UI::Xaml::DependencyObjectCollection>(); 
-
-		for (uint32_t i = 0; i < themes.Size(); ++i) {
-			auto item = themes.GetAt(i); 
-			m_themeItems.Append(item.as<winrt::Win2dTextReader::AppTheme>()); 
-		}
-
 	}
 
 	void MainWindowViewModel::SetDefaultValues()
@@ -384,8 +370,9 @@ namespace winrt::Win2dTextReader::implementation
 		m_lineHeightIndex = 3;
 		m_readerVerticalOffset = 0; 
 
-		m_fontFamilyIndex = 0; 
-		m_themeIndex = 0;
+		m_fontFamilyIndex = 3; 
+		m_themeIndex = 7;
+		m_fontWeightIndex = 2; 
 		m_currentBook = winrt::Xuanwen::Novel::NovelBook(L"ms-appx:///Assets/使用说明.txt");
 	}
 }

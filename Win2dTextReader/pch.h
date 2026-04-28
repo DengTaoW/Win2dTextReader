@@ -34,6 +34,9 @@
 #include <winrt/Microsoft.Windows.Storage.Pickers.h>
 #include <strsafe.h>
 
+#include <winrt/Windows.UI.Text.h>
+
 #include <winrt/Xuanwen.Novel.h>
 #include "WinrtTypeName.h"
 #include "AppTheme.h"
+#include "AppFont.h"
