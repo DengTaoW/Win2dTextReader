@@ -24,6 +24,7 @@
     <ClCompile Include="NovelBook.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="CommonTools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="Chapter.idl">
@@ -49,6 +50,7 @@
     <ClInclude Include="NovelBook.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="CommonTools.h" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis">

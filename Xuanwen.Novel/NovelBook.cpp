@@ -7,13 +7,11 @@
 #include <string_view>
 #include <queue>
 #include <filesystem>
+#include "CommonTools.h"
+
 
 const std::wregex TITLE_REGEX{ LR"(第[\s\d零一二三四五六七八九十百千万]+章)" };
 
-static constexpr size_t minOf(size_t v1, size_t v2)
-{
-    return (v1 < v2) ? v1 : v2; 
-}
 
 
 namespace winrt::Xuanwen::Novel::implementation
@@ -26,42 +24,49 @@ namespace winrt::Xuanwen::Novel::implementation
 
     winrt::Windows::Foundation::IAsyncAction NovelBook::InitializeAsync()
     {
-        // 1. 获取 Storage File
-        winrt::Windows::Storage::StorageFile novelFile{ nullptr }; 
+        winrt::apartment_context context; 
+        co_await winrt::resume_background();
+        
+        const char* data{ nullptr }; 
+        size_t dataLength{ 0 }; 
+        bool isMappingFile{ false }; 
 
         if (m_filePath.starts_with(L"ms-appx")) {
             winrt::Windows::Foundation::Uri uri{ m_filePath }; 
-            novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromApplicationUriAsync(uri);
+            winrt::Windows::Storage::StorageFile novelFile = 
+                co_await winrt::Windows::Storage::StorageFile::GetFileFromApplicationUriAsync(uri);
+
+            winrt::Windows::Storage::Streams::IBuffer buffer =
+                co_await winrt::Windows::Storage::FileIO::ReadBufferAsync(novelFile);
+
+            data = reinterpret_cast<const char*>(buffer.data());
+            dataLength = buffer.Length();
+            m_bookName = novelFile.DisplayName(); 
         }
         else {
-            if (std::filesystem::exists(m_filePath.c_str())) {
-                novelFile = co_await winrt::Windows::Storage::StorageFile::GetFileFromPathAsync(m_filePath);
-            }
-            else {
-                co_return; 
-            }
+            Xuanwen::MappingFile mappingFile(m_filePath.c_str()); 
+            data = mappingFile.Data();
+            dataLength = mappingFile.Length(); 
+            isMappingFile = true; 
+
+            m_bookName = mappingFile.FileName(); 
         }
 
-        m_bookName = novelFile.DisplayName(); 
-
-        // 2. 读取字节数组
-        winrt::Windows::Storage::Streams::IBuffer buffer =
-            co_await winrt::Windows::Storage::FileIO::ReadBufferAsync(novelFile);
-        const char* data = reinterpret_cast<const char*>(buffer.data()); 
-        size_t dataLength = buffer.Length(); 
-
-        // 3. 解码字节数组
+        // 解码字节数组
         winrt::hstring content = DecodeBytesArray(data, dataLength); 
 
+        if (isMappingFile) {
+            ::UnmapViewOfFile(data); 
+        }
+
         if (content.empty()) {
+            co_await context; 
             co_return; 
         }
         m_totalChars = static_cast<uint32_t>(content.size()); 
 
-        // 4. 分章
+        // 分章
         std::wstring_view contentView{ content }; 
-        if (contentView.empty())
-            co_return; 
 
         size_t firstLineEnd = contentView.find_first_of(L'\n', 0); 
         std::wstring_view firstLine = contentView.substr(0, firstLineEnd); 
@@ -82,6 +87,8 @@ namespace winrt::Xuanwen::Novel::implementation
                 m_chapters.RemoveAt(0); 
             }
         }
+
+        co_await context; 
     }
 
     hstring NovelBook::Name() const
@@ -130,7 +137,7 @@ namespace winrt::Xuanwen::Novel::implementation
         }
 
         // 2. 检测编码名称
-        const size_t sampleSize = minOf(10240ul, dataLength); 
+        const size_t sampleSize = winrt::Xuanwen::minOf(10240ull, dataLength); 
         std::string charsetName = DetectCharsetName(data, sampleSize); 
 
         // 3. 解码 UTF-8, UTF-16BE, UTF-16LE, GB2312 编码的字符串，其他编码格式都会返回空字符串。
