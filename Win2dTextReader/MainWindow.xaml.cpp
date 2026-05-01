@@ -37,6 +37,8 @@ namespace winrt::Win2dTextReader::implementation
 
 	winrt::fire_and_forget MainWindow::LoadHistoryAsync()
 	{
+		winrt::apartment_context context; 
+
 		winrt::Windows::Graphics::RectInt32 windowRect{
 			m_viewModel.WindowPositionX(),
 			m_viewModel.WindowPositionY(),
@@ -48,6 +50,9 @@ namespace winrt::Win2dTextReader::implementation
 		if (m_viewModel.CurrentBook() != nullptr) {
 			co_await m_viewModel.CurrentBook().InitializeAsync();
 			m_chaptersChanged(winrt::box_value(false));
+
+			co_await winrt::resume_after(std::chrono::milliseconds{ 100 }); 
+			co_await context; 
 
 			this->ContentScrollView().ScrollBy(0, m_viewModel.ReaderVerticalOffset()); 
 		}

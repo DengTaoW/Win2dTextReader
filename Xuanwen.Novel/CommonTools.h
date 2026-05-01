@@ -4,8 +4,8 @@
 
 namespace winrt::Xuanwen
 {
-	template<std::totally_ordered T>
-	T minOf(const T& t1, const T& t2)
+	template<typename T1, typename T2>
+	auto minOf(const T1& t1, const T2& t2)  -> decltype(t1 + t2)
 	{
 		return t1 <= t2 ? t1 : t2; 
 	}
@@ -20,8 +20,8 @@ namespace winrt::Xuanwen
 		return std::ranges::min(values.begin(), values.end()); 
 	}
 
-	template<std::totally_ordered T>
-	T maxOf(const T& t1, const T& t2)
+	template<typename T1, typename T2>
+	auto maxOf(const T1& t1, const T2& t2) -> decltype(t1 + t2)
 	{
 		return t1 <= t2 ? t2 : t1; 
 	}

@@ -13,7 +13,6 @@
 const std::wregex TITLE_REGEX{ LR"(第[\s\d零一二三四五六七八九十百千万]+章)" };
 
 
-
 namespace winrt::Xuanwen::Novel::implementation
 {
     NovelBook::NovelBook(hstring const& filePath)
@@ -24,9 +23,6 @@ namespace winrt::Xuanwen::Novel::implementation
 
     winrt::Windows::Foundation::IAsyncAction NovelBook::InitializeAsync()
     {
-        winrt::apartment_context context; 
-        co_await winrt::resume_background();
-        
         const char* data{ nullptr }; 
         size_t dataLength{ 0 }; 
         bool isMappingFile{ false }; 
@@ -60,12 +56,14 @@ namespace winrt::Xuanwen::Novel::implementation
         }
 
         if (content.empty()) {
-            co_await context; 
             co_return; 
         }
         m_totalChars = static_cast<uint32_t>(content.size()); 
 
         // 分章
+        winrt::apartment_context context;
+        co_await winrt::resume_background();
+
         std::wstring_view contentView{ content }; 
 
         size_t firstLineEnd = contentView.find_first_of(L'\n', 0); 
@@ -78,12 +76,12 @@ namespace winrt::Xuanwen::Novel::implementation
             this->GenerateChaptersTypeB(contentView);
         }
 
-        // 5. 判断第一章是否为空，如果是就移除
+        // 判断第一章是否为空，如果是就移除
         if (m_chapters.Size() > 0) {
             winrt::Xuanwen::Novel::Chapter firstChapter = m_chapters.GetAt(0); 
             std::wstring textView{ firstChapter.Text().c_str()};
 
-            if (NovelBook::IsEmpty(textView)) {
+            if (NovelBook::IsEmptyChapter(textView)) {
                 m_chapters.RemoveAt(0); 
             }
         }
@@ -137,7 +135,7 @@ namespace winrt::Xuanwen::Novel::implementation
         }
 
         // 2. 检测编码名称
-        const size_t sampleSize = winrt::Xuanwen::minOf(10240ull, dataLength); 
+        const size_t sampleSize = winrt::Xuanwen::minOf(10240ul, dataLength); 
         std::string charsetName = DetectCharsetName(data, sampleSize); 
 
         // 3. 解码 UTF-8, UTF-16BE, UTF-16LE, GB2312 编码的字符串，其他编码格式都会返回空字符串。
@@ -178,7 +176,7 @@ namespace winrt::Xuanwen::Novel::implementation
         return isFound; 
     }
 
-    bool NovelBook::IsEmpty(std::wstring_view text)
+    bool NovelBook::IsEmptyChapter(std::wstring_view text)
     {
         if (text.empty()) {
             return true; 
@@ -241,14 +239,11 @@ namespace winrt::Xuanwen::Novel::implementation
     winrt::hstring NovelBook::DecodeFromMultiBytes(const char* data, size_t dataLength, std::string charsetName)
     {
         UINT codePage = 0;
-        if (charsetName == "utf-8") {
-            codePage = CP_UTF8;
-        }
-        else if (charsetName == "gb18030") {
+        if (charsetName == "gb18030") {
             codePage = 54936;
         }
         else {
-            return {};
+            codePage = CP_UTF8;
         }
 
         int sizeNeeded = MultiByteToWideChar(
