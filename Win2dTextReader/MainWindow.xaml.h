@@ -43,6 +43,7 @@ namespace winrt::Win2dTextReader::implementation
 		void ChaptersChanged(winrt::event_token const& token) noexcept;
 
 		void OnViewModelPropertyChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs const& e);
+		winrt::fire_and_forget ShowUsages(winrt::Windows::Foundation::IInspectable const& sender, winrt::Microsoft::UI::Xaml::RoutedEventArgs const& e);
 	};
 }
 

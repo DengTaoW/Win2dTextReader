@@ -237,6 +237,15 @@ namespace winrt::Win2dTextReader::implementation
 			}
 		}
 	}
+
+	winrt::fire_and_forget MainWindow::ShowUsages(
+		winrt::Windows::Foundation::IInspectable const&, 
+		winrt::Microsoft::UI::Xaml::RoutedEventArgs const&)
+	{
+		co_await m_viewModel.ShowUsages();
+	}
 }
+
+
 
 

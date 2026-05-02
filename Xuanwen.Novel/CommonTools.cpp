@@ -44,11 +44,7 @@ namespace winrt::Xuanwen
 		}
 
 		// 4. 将文件映射到进程的虚拟地址空间
-		m_pAddr = ::MapViewOfFile(
-			hMapping,
-			FILE_MAP_READ,
-			0, 0, 0
-		);
+		m_pAddr = ::MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, 0 );
 
 		::CloseHandle(hMapping);
 		::CloseHandle(hFile);

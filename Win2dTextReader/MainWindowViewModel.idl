@@ -13,6 +13,7 @@ namespace Win2dTextReader
 		void LoadData(); 
 		void SaveData();
 		void OnChaptersChanged(Object obj); 
+		Windows.Foundation.IAsyncAction ShowUsages(); 
 
 		Int32 ChapterIndex; 
 		Int32 LineHeightIndex;

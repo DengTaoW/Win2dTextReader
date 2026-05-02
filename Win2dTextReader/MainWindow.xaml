@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Closed="Window_Closed"
-    Title="Win2dTextReader">
+    Title="Text Novel Reader">
 
     <Window.SystemBackdrop>
         <MicaBackdrop />
@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Margin="10">
-            <TextBlock Grid.Row="1" FontWeight="Bold" 
+            <TextBlock Grid.Row="1" FontWeight="Bold" TextWrapping="NoWrap"
                        Foreground="{x:Bind ViewModel.AppTheme.Foreground, Mode=OneWay}">
                 <Run Text="{x:Bind ViewModel.CurrentBook.Name, Mode=OneWay}" /> -
                 <Run Text="{x:Bind ViewModel.CurrentChapter.Title, Mode=OneWay}" />
@@ -93,6 +93,8 @@
                                 </MenuFlyoutItem.KeyboardAccelerators>
                             </MenuFlyoutItem>
                         </MenuFlyoutSubItem>
+
+                        <MenuFlyoutItem Text="使用说明" Click="ShowUsages" /> 
                     </MenuFlyout>
                 </ScrollView.ContextFlyout>
             </ScrollView>

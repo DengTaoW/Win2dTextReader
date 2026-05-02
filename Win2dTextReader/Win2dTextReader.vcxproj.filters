@@ -23,6 +23,9 @@
     <Midl Include="FontWeightItem.idl">
       <Filter>Components</Filter>
     </Midl>
+    <Midl Include="ReaderHistoryItem.idl">
+      <Filter>Components</Filter>
+    </Midl>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -45,6 +48,9 @@
     </ClCompile>
     <ClCompile Include="AppResource.cpp" />
     <ClCompile Include="FontWeightItem.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ReaderHistoryItem.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -257,6 +263,9 @@
     </ClInclude>
     <ClInclude Include="AppResource.h" />
     <ClInclude Include="FontWeightItem.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ReaderHistoryItem.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>

@@ -138,6 +138,7 @@
     <ClInclude Include="MainWindow.xaml.h">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="ReaderHistoryItem.h" />
     <ClInclude Include="Settings.xaml.h">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -177,6 +178,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="ReaderHistoryItem.cpp" />
     <ClCompile Include="Settings.xaml.cpp">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -197,6 +199,7 @@
       <SubType>Code</SubType>
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Midl>
+    <Midl Include="ReaderHistoryItem.idl" />
     <Midl Include="Settings.idl">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>

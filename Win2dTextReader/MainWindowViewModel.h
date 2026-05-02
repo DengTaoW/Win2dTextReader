@@ -11,6 +11,7 @@ namespace winrt::Win2dTextReader::implementation
         void LoadData();
         void SaveData();
         void OnChaptersChanged(winrt::Windows::Foundation::IInspectable const& obj);
+        winrt::Windows::Foundation::IAsyncAction ShowUsages();
 
         int32_t ChapterIndex() const;
         void ChapterIndex(int32_t value);
@@ -85,6 +86,7 @@ namespace winrt::Win2dTextReader::implementation
         static winrt::hstring UINT32_VALUES; 
         static winrt::hstring DOUBLE_VALUES; 
         static winrt::hstring STRING_VALUES; 
+        static winrt::hstring USAGES_FILE_PATH; 
 
         winrt::Xuanwen::Novel::NovelBook m_currentBook{ nullptr }; 
         winrt::event<winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> m_propertyChanged; 

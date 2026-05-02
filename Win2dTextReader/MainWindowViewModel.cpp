@@ -10,7 +10,7 @@ namespace winrt::Win2dTextReader::implementation
 	winrt::hstring MainWindowViewModel::UINT32_VALUES{ L"UINT32_VALUES" }; 
 	winrt::hstring MainWindowViewModel::DOUBLE_VALUES{ L"DOUBLE_VALUES" }; 
 	winrt::hstring MainWindowViewModel::STRING_VALUES{ L"STRING_VALUES" }; 
-
+	winrt::hstring MainWindowViewModel::USAGES_FILE_PATH{ L"ms-appx:///Assets/使用说明.txt" };
 
 	MainWindowViewModel::MainWindowViewModel()
 	{
@@ -114,6 +114,16 @@ namespace winrt::Win2dTextReader::implementation
 			this->NotifyPropertyChanged(L"CurrentChapter"); 
 			this->NotifyPropertyChanged(L"CurrentBook"); 
 		}
+	}
+
+	winrt::Windows::Foundation::IAsyncAction MainWindowViewModel::ShowUsages()
+	{
+		if (m_currentBook.FilePath() == USAGES_FILE_PATH)
+			co_return; 
+
+		m_currentBook = winrt::Xuanwen::Novel::NovelBook(USAGES_FILE_PATH); 
+		co_await m_currentBook.InitializeAsync();
+		this->OnChaptersChanged(winrt::box_value(true)); 
 	}
 
 	int32_t MainWindowViewModel::ChapterIndex() const
@@ -373,6 +383,6 @@ namespace winrt::Win2dTextReader::implementation
 		m_fontFamilyIndex = 3; 
 		m_themeIndex = 7;
 		m_fontWeightIndex = 2; 
-		m_currentBook = winrt::Xuanwen::Novel::NovelBook(L"ms-appx:///Assets/使用说明.txt");
+		m_currentBook = winrt::Xuanwen::Novel::NovelBook(USAGES_FILE_PATH);
 	}
 }
